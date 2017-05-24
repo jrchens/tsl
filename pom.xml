@@ -198,6 +198,7 @@
         <module>tsl-common</module>
         <module>tsl-admin</module>
         <module>tsl-cms</module>
+        <module>tsl-cms-admin</module>
     </modules>
 
 
