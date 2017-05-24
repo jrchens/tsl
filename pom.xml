@@ -199,6 +199,7 @@
         <module>tsl-admin</module>
         <module>tsl-cms</module>
         <module>tsl-cms-admin</module>
+        <module>tsl-test</module>
     </modules>
 
 
