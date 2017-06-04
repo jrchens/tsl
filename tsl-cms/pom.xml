@@ -12,5 +12,15 @@
     <artifactId>tsl-cms</artifactId>
     <packaging>war</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>me.simple</groupId>
+            <artifactId>tsl-cms-admin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
+    <build>
+        <finalName>cms</finalName>
+    </build>
 </project>

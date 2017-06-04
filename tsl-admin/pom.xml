@@ -12,6 +12,14 @@
     <artifactId>tsl-admin</artifactId>
     <packaging>war</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>me.simple</groupId>
+            <artifactId>tsl-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <finalName>tsl-admin</finalName>
     </build>

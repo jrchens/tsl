@@ -1,0 +1,85 @@
+package me.simple.sys.controller;
+
+import com.google.common.collect.Maps;
+import me.simple.domain.CurrentUser;
+import me.simple.domain.Pageable;
+import me.simple.domain.${ClazzName};
+import me.simple.sys.service.${ClazzName}Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+import java.util.Map;
+
+@Controller
+@RequestMapping("${tablename}")
+public class ${ClazzName}Controller {
+    private static final Logger logger = LoggerFactory.getLogger(${ClazzName}Controller.class);
+
+    @Autowired
+    private ${ClazzName}Service ${clazzName}Service;
+
+    @RequestMapping(value = "index", method = RequestMethod.GET)
+    public String index(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+
+        model.addAttribute(${clazzName});
+        return "${tablename}/index";
+    }
+
+    @RequestMapping(value = "create", method = RequestMethod.GET)
+    public String create(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+
+        model.addAttribute(${clazzName});
+        return "${tablename}/create";
+    }
+
+    @RequestMapping(value = "save", method = RequestMethod.POST)
+    public String save(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+
+        ${clazzName}Service.save(${clazzName}, currentUser);
+        return "redirect:/${tablename}/index";
+    }
+
+    @RequestMapping(value = "remove", method = RequestMethod.POST)
+    public String remove(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+
+        ${clazzName}Service.remove(${clazzName}, currentUser);
+        return "redirect:/${tablename}/index";
+    }
+
+    @RequestMapping(value = "edit", method = RequestMethod.GET)
+    public String edit(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+        model.addAttribute(${clazzName}Service.get(${clazzName}, currentUser));
+        return "${tablename}/edit";
+    }
+
+    @RequestMapping(value = "update", method = RequestMethod.POST)
+    public String update(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+
+        ${clazzName}Service.update(${clazzName}, currentUser);
+        return "redirect:/${tablename}/index";
+    }
+
+    @RequestMapping(value = "query", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> query(${ClazzName} ${clazzName}, BindingResult bindingResult,
+                                                     Pageable pageable,
+                                                     CurrentUser currentUser, Model model) {
+        List<${ClazzName}> rows = ${clazzName}Service.query(${clazzName}, pageable, currentUser);
+        int total = pageable.getTotal();
+
+        Map<String, Object> body = Maps.newHashMap();
+        body.put("rows", rows);
+        body.put("total", total);
+
+        return ResponseEntity.ok(body);
+    }
+}

@@ -1,0 +1,15 @@
+package me.simple.sys.service;
+
+import me.simple.domain.CurrentUser;
+import me.simple.domain.Pageable;
+import me.simple.domain.${ClazzName};
+
+import java.util.List;
+
+public interface ${ClazzName}Service {
+    public int save(${ClazzName} ${clazzName}, CurrentUser currentUser);
+    public int remove(${ClazzName} ${clazzName}, CurrentUser currentUser);
+    public int update(${ClazzName} ${clazzName}, CurrentUser currentUser);
+    public ${ClazzName} get(${ClazzName} ${clazzName}, CurrentUser currentUser);
+    public List<${ClazzName}> query(${ClazzName} ${clazzName}, Pageable pageable, CurrentUser currentUser);
+}
