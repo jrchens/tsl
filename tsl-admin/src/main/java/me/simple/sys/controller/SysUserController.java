@@ -50,7 +50,7 @@ public class SysUserController {
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(@Validated(value = {Save.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
         // username exists
-        if (sysUserService.getByUsername(sysUser, currentUser) != null) {
+        if (sysUserService.getByUsername(sysUser.getUsername()) != null) {
             bindingResult.rejectValue("username", "value.exists", new Object[]{sysUser.getUsername()}, "value.exists");
         }
         if (bindingResult.hasErrors()) {

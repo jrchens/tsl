@@ -6,25 +6,25 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ include file="./common/taglib.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
     <title>管理员登陆</title>
     <meta charset="UTF-8">
+    <%@ include file="./common/css.jsp" %>
+    <%@ include file="./common/js.jsp" %>
 
-    <link rel="stylesheet" type="text/css" href="http://assets.local.com/jquery-easyui-1.5.2/themes/default/easyui.css">
-    <link rel="stylesheet" type="text/css" href="http://assets.local.com/jquery-easyui-1.5.2/themes/icon.css">
-
-    <script type="text/javascript" src="http://assets.local.com/jquery-easyui-1.5.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://assets.local.com/jquery-easyui-1.5.2/jquery.easyui.min.js"></script>
-    <script type="text/javascript"
-            src="http://assets.local.com/jquery-easyui-1.5.2/locale/easyui-lang-zh_CN.js"></script>
 
 </head>
 <body>
 
 <div class="easyui-layout" data-options="fit:true">
-    <div data-options="region:'north'" style="height:50px"></div>
+
+
+    <div data-options="region:'north'" style="height:50px">${currentUser.viewname} Exit</div>
+
+
     <div data-options="region:'south',split:true" style="height:50px;">copy right</div>
 
     <%--
@@ -74,6 +74,6 @@
 
 </body>
 
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/login.js"></script>
+<script type="text/javascript" src="/resources/js/index.js"></script>
 
 </html>

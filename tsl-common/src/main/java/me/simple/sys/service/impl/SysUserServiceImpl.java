@@ -102,8 +102,10 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(readOnly = true)
-    public SysUser getByUsername(SysUser sysUser, CurrentUser currentUser) {
+    public SysUser getByUsername(String username) {
         try {
+            SysUser sysUser = new SysUser();
+            sysUser.setUsername(username);
             return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName, "username"), new BeanPropertySqlParameterSource(sysUser), new BeanPropertyRowMapper<SysUser>(SysUser.class));
         } catch (DataAccessException e) {
             // username not exists

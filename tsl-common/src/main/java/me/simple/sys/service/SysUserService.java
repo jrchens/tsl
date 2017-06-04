@@ -17,5 +17,5 @@ public interface SysUserService {
     public List<SysUser> query(SysUser sysUser, Pageable pageable, CurrentUser currentUser);
 
 
-    public SysUser getByUsername(SysUser sysUser, CurrentUser currentUser);
+    public SysUser getByUsername(String username);
 }

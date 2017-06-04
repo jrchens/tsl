@@ -3,7 +3,7 @@
  */
 
 function userLogin() {
-    var loginForm = jQuery('#user-login-form');
+    var loginForm = jQuery('#user_login_form');
     var url = loginForm.attr("url");
     loginForm.form('submit', {
         url: url,
