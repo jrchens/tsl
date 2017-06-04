@@ -50,18 +50,31 @@ public class ${ClazzName}ServiceImpl implements ${ClazzName}Service {
 
     @Override
     public int save(${ClazzName} ${clazzName} , CurrentUser currentUser) {
+        String user = currentUser.getUsername();
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+
+        ${clazzName}.setCruser(user);
+        ${clazzName}.setCrtime(time);
         return simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(${clazzName})).intValue();
     }
 
     @Override
     public int remove(${ClazzName} ${clazzName} , CurrentUser currentUser) {
+        String user = currentUser.getUsername();
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+
+        ${clazzName}.setMduser(user);
+        ${clazzName}.setMdtime(time);
         return namedParameterJdbcTemplate.update(SQLUtil.generateRemoveSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(${clazzName}));
     }
 
     @Override
     public int update(${ClazzName} ${clazzName} , CurrentUser currentUser) {
-        ${clazzName}.setMdtime(new Timestamp(System.currentTimeMillis()));
-        ${clazzName}.setMduser("admin");
+        String user = currentUser.getUsername();
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+
+        ${clazzName}.setMduser(user);
+        ${clazzName}.setMdtime(time);
         return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName,updateColumns,generatedKeyName),new BeanPropertySqlParameterSource(${clazzName}));
     }
 

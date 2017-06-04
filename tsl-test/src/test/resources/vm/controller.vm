@@ -5,6 +5,8 @@ import me.simple.domain.CurrentUser;
 import me.simple.domain.Pageable;
 import me.simple.domain.${ClazzName};
 import me.simple.sys.service.${ClazzName}Service;
+import me.simple.validator.group.*;
+import me.simple.web.method.support.LoginedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,51 +31,64 @@ public class ${ClazzName}Controller {
     private ${ClazzName}Service ${clazzName}Service;
 
     @RequestMapping(value = "index", method = RequestMethod.GET)
-    public String index(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+    public String index(@Validated(value = {Index.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
         model.addAttribute(${clazzName});
         return "${tablename}/index";
     }
 
     @RequestMapping(value = "create", method = RequestMethod.GET)
-    public String create(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+    public String create(@Validated(value = {Create.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
         model.addAttribute(${clazzName});
         return "${tablename}/create";
     }
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
-    public String save(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+    public String save(@Validated(value = {Save.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
+        if (bindingResult.hasErrors()) {
+            return "${tablename}/create";
+        }
         ${clazzName}Service.save(${clazzName}, currentUser);
         return "redirect:/${tablename}/index";
     }
 
     @RequestMapping(value = "remove", method = RequestMethod.POST)
-    public String remove(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+    public String remove(@Validated(value = {Remove.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
+        if (bindingResult.hasErrors()) {
+            return "${tablename}/index";
+        }
         ${clazzName}Service.remove(${clazzName}, currentUser);
         return "redirect:/${tablename}/index";
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public String edit(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+    public String edit(@Validated(value = {Edit.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "${tablename}/index";
+        }
         model.addAttribute(${clazzName}Service.get(${clazzName}, currentUser));
         return "${tablename}/edit";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String update(${ClazzName} ${clazzName}, BindingResult bindingResult, CurrentUser currentUser, Model model) {
+    public String update(@Validated(value = {Update.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
+        if (bindingResult.hasErrors()) {
+            return "${tablename}/edit";
+        }
         ${clazzName}Service.update(${clazzName}, currentUser);
         return "redirect:/${tablename}/index";
     }
 
     @RequestMapping(value = "query", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> query(${ClazzName} ${clazzName}, BindingResult bindingResult,
+    public ResponseEntity<Map<String, Object>> query(@Validated(value = {Query.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult,
                                                      Pageable pageable,
-                                                     CurrentUser currentUser, Model model) {
+                                                     @LoginedUser CurrentUser currentUser, Model model) {
         List<${ClazzName}> rows = ${clazzName}Service.query(${clazzName}, pageable, currentUser);
         int total = pageable.getTotal();
 

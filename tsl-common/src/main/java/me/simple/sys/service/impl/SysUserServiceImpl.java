@@ -51,18 +51,31 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public int save(SysUser sysUser, CurrentUser currentUser) {
+        String user = currentUser.getUsername();
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+
+        sysUser.setCruser(user);
+        sysUser.setCrtime(time);
         return simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(sysUser)).intValue();
     }
 
     @Override
     public int remove(SysUser sysUser, CurrentUser currentUser) {
+        String user = currentUser.getUsername();
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+
+        sysUser.setMduser(user);
+        sysUser.setMdtime(time);
         return namedParameterJdbcTemplate.update(SQLUtil.generateRemoveSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(sysUser));
     }
 
     @Override
     public int update(SysUser sysUser, CurrentUser currentUser) {
-        sysUser.setMdtime(new Timestamp(System.currentTimeMillis()));
-        sysUser.setMduser("admin");
+        String user = currentUser.getUsername();
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+
+        sysUser.setMduser(user);
+        sysUser.setMdtime(time);
         return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName,updateColumns,generatedKeyName),new BeanPropertySqlParameterSource(sysUser));
     }
 
