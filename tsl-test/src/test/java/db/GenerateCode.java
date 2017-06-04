@@ -57,6 +57,7 @@ public class GenerateCode {
             // show columns from sys_user;
             // DESCRIBE sys_user
             List<Map<String,String>> fields = Lists.newArrayList();
+            String generateBaseDir = "/Users/chensheng/IdeaProjects/tsl";
             String tablename = "sys_role";
             String clazzName = "sysRole";
             String ClazzName = StringUtils.capitalize(clazzName);
@@ -68,7 +69,7 @@ public class GenerateCode {
                     columns) {
                 String fieldName = ObjectUtils.getDisplayString(field.get("Field"));
                 String fieldType = ObjectUtils.getDisplayString(field.get("Type"));
-                if ("id".equalsIgnoreCase(fieldName) || "disabled".equalsIgnoreCase(fieldName)
+                if (/*"id".equalsIgnoreCase(fieldName) || */"disabled".equalsIgnoreCase(fieldName)
                         || "deleted".equalsIgnoreCase(fieldName) || "cruser".equalsIgnoreCase(fieldName)
                         || "crtime".equalsIgnoreCase(fieldName) || "mduser".equalsIgnoreCase(fieldName)
                         || "mdtime".equalsIgnoreCase(fieldName)
@@ -114,22 +115,22 @@ public class GenerateCode {
             context.put("fields", fields);
 
             Template pojoTemplate = Velocity.getTemplate("pojo.vm");
-            Writer pojoWriter = new FileWriter(new File("/Users/chensheng/IdeaProjects/tsl/tsl-common/src/main/java/me/simple/domain/"+ClazzName+".java"));
+            Writer pojoWriter = new FileWriter(new File(generateBaseDir + "/tsl-common/src/main/java/me/simple/domain/"+ClazzName+".java"));
             pojoTemplate.merge(context, pojoWriter);
             IOUtils.closeQuietly(pojoWriter);
 
             Template serviceTemplate = Velocity.getTemplate("service.vm");
-            Writer serviceWriter = new FileWriter(new File("/Users/chensheng/IdeaProjects/tsl/tsl-common/src/main/java/me/simple/sys/service/"+ClazzName+"Service.java"));
+            Writer serviceWriter = new FileWriter(new File(generateBaseDir + "/tsl-common/src/main/java/me/simple/sys/service/"+ClazzName+"Service.java"));
             serviceTemplate.merge(context, serviceWriter);
             IOUtils.closeQuietly(serviceWriter);
 
             Template serviceImplTemplate = Velocity.getTemplate("service.impl.vm");
-            Writer serviceImplWriter = new FileWriter(new File("/Users/chensheng/IdeaProjects/tsl/tsl-common/src/main/java/me/simple/sys/service/impl/"+ClazzName+"ServiceImpl.java"));
+            Writer serviceImplWriter = new FileWriter(new File(generateBaseDir + "/tsl-common/src/main/java/me/simple/sys/service/impl/"+ClazzName+"ServiceImpl.java"));
             serviceImplTemplate.merge(context, serviceImplWriter);
             IOUtils.closeQuietly(serviceImplWriter);
 
             Template controllerTemplate = Velocity.getTemplate("controller.vm");
-            Writer controllerWriter = new FileWriter(new File("/Users/chensheng/IdeaProjects/tsl/tsl-admin/src/main/java/me/simple/sys/controller/"+ClazzName+"Controller.java"));
+            Writer controllerWriter = new FileWriter(new File(generateBaseDir + "/tsl-admin/src/main/java/me/simple/sys/controller/"+ClazzName+"Controller.java"));
             controllerTemplate.merge(context, controllerWriter);
             IOUtils.closeQuietly(controllerWriter);
         } catch (Exception e) {
