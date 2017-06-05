@@ -27,7 +27,9 @@
     <form:hidden path="id"/>
     <form:errors path="id"/>
 </form:form>
-</body>
 
 <script type="text/javascript" src="/resources/js/sys_user/index.js"></script>
+
+</body>
+
 </html>

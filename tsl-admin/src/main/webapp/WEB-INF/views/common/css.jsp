@@ -9,3 +9,12 @@
 
 <link rel="stylesheet" type="text/css" href="http://assets.local.com/jquery-easyui-1.5.2/themes/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="http://assets.local.com/jquery-easyui-1.5.2/themes/icon.css">
+
+<style type="text/css">
+    .menu-link {
+        margin-bottom: 8px;
+    }
+    .center-body {
+        padding: 8px;
+    }
+</style>

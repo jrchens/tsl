@@ -33,7 +33,7 @@
     </div>
     --%>
 
-    <div data-options="region:'west',split:true" title="West" style="width:100px;">
+    <div data-options="region:'west',split:true" title="West" style="width:180px;">
         <%--
         // USE TREE MENU
         <div class="easyui-accordion" data-options="fit:true,border:false">
@@ -47,13 +47,24 @@
                 content3
             </div>
         </div>--%>
+
+        <div class="easyui-accordion" data-options="fit:true,border:false">
+            <div title="System" style="padding:10px;">
+                <div class="menu-link"><a id="1" href="javascript:;">User Manager</a></div>
+                <div class="menu-link"><a id="2" href="javascript:;">Role Manager</a></div>
+            </div>
+        </div>
+
     </div>
 
     <div data-options="region:'center',title:'Main Title',iconCls:'icon-ok'">
-        <div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
+        <div id="1C257E98E2FC405A8347FB1B3AE0F3CD" class="easyui-tabs" data-options="fit:true,border:false,plain:true">
+
+            <%--
             <div title="About" data-options="href:'${pageContext.request.contextPath}/dashboard'"
                  style="padding:10px"></div>
-            <%--<div title="DataGrid" style="padding:5px">
+
+            <div title="DataGrid" style="padding:5px">
                 <table class="easyui-datagrid"
                        data-options="url:'datagrid_data1.json',method:'get',singleSelect:true,fit:true,fitColumns:true">
                     <thead>
