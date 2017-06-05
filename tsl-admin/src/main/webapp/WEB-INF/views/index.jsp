@@ -59,11 +59,7 @@
 
     <div data-options="region:'center',title:'Main Title',iconCls:'icon-ok'">
         <div id="1C257E98E2FC405A8347FB1B3AE0F3CD" class="easyui-tabs" data-options="fit:true,border:false,plain:true">
-
             <%--
-            <div title="About" data-options="href:'${pageContext.request.contextPath}/dashboard'"
-                 style="padding:10px"></div>
-
             <div title="DataGrid" style="padding:5px">
                 <table class="easyui-datagrid"
                        data-options="url:'datagrid_data1.json',method:'get',singleSelect:true,fit:true,fitColumns:true">
@@ -82,9 +78,12 @@
         </div>
     </div>
 </div>
-
-</body>
+<script type="text/javascript">
+    var LAYOUT_TABS_CENTER = jQuery('#1C257E98E2FC405A8347FB1B3AE0F3CD');
+</script>
 
 <script type="text/javascript" src="/resources/js/index.js"></script>
+
+</body>
 
 </html>
