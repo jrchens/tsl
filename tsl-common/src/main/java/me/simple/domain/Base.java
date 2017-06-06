@@ -14,6 +14,7 @@ public class Base implements java.io.Serializable {
 
     private String rowid;
     private String rowids;
+    private String ids;
 
     private boolean disabled;
     private boolean deleted;
@@ -85,5 +86,13 @@ public class Base implements java.io.Serializable {
 
     public void setMdtime(Timestamp mdtime) {
         this.mdtime = mdtime;
+    }
+
+    public String getIds() {
+        return ids;
+    }
+
+    public void setIds(String ids) {
+        this.ids = ids;
     }
 }

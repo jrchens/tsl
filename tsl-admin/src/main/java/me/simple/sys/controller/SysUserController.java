@@ -60,6 +60,30 @@ public class SysUserController {
         return "redirect:/sys_user/index";
     }
 
+
+    @RequestMapping(value = "save.json", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> asave(@Validated(value = {Save.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+        // username exists
+        boolean success = true;
+        String message = null;
+        Map<String,Object> body = Maps.newHashMap();
+        if (sysUserService.getByUsername(sysUser.getUsername()) != null) {
+            bindingResult.rejectValue("username", "value.exists", new Object[]{sysUser.getUsername()}, "value.exists");
+        }
+        if (bindingResult.hasErrors()) {
+            success = false;
+
+        }else{
+            sysUserService.save(sysUser, currentUser);
+        }
+
+        body.put("success",success);
+        body.put("message",message);
+
+        return ResponseEntity.ok(body);
+    }
+
     @RequestMapping(value = "remove", method = RequestMethod.POST)
     public String remove(@Validated(value = {Remove.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
@@ -68,6 +92,27 @@ public class SysUserController {
         }
         sysUserService.remove(sysUser, currentUser);
         return "redirect:/sys_user/index";
+    }
+
+
+    @RequestMapping(value = "remove.json", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> aremove(/*@Validated(value = {Remove.class}) */SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+
+        boolean success = true;
+        String message = null;
+        Map<String,Object> body = Maps.newHashMap();
+
+        if (bindingResult.hasErrors()) {
+            success = false;
+        }else{
+            sysUserService.remove(sysUser, currentUser);
+        }
+
+        body.put("success",success);
+        body.put("message",message);
+
+        return ResponseEntity.ok(body);
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
@@ -87,6 +132,26 @@ public class SysUserController {
         }
         sysUserService.update(sysUser, currentUser);
         return "redirect:/sys_user/index";
+    }
+
+    @RequestMapping(value = "update.json", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> aupdate(@Validated(value = {Update.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+
+        boolean success = true;
+        String message = null;
+        Map<String,Object> body = Maps.newHashMap();
+
+        if (bindingResult.hasErrors()) {
+            success = false;
+        }else{
+            sysUserService.update(sysUser, currentUser);
+        }
+
+        body.put("success",success);
+        body.put("message",message);
+
+        return ResponseEntity.ok(body);
     }
 
     @RequestMapping(value = "query", method = RequestMethod.GET)

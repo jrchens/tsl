@@ -11,3 +11,4 @@
 <script type="text/javascript" src="http://assets.local.com/jquery-easyui-1.5.2/locale/easyui-lang-zh_CN.js"></script>
 
 <script type="text/javascript" src="/resources/js/easyui_defaults.js"></script>
+<script type="text/javascript" src="/resources/js/common.js"></script>

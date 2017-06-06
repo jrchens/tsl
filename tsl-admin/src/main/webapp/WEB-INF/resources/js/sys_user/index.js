@@ -7,21 +7,23 @@ jQuery(function () {
     if (dg.length == 1){
         dg.datagrid({
             url : "/sys_user/query",
+            pagination : true,
+            cls : "datagrid-float",
+            width : 420,
+            // singleSelect : true,
             toolbar : [{
                 iconCls: "icon-add",
                 text: "Add",
                 handler: function(){
-                    location.href = "/sys_user/create";
+                    tabRefresh("/sys_user/create");
                 }
             },"-",{
                 iconCls: "icon-edit",
                 text: "Edit",
                 handler: function(){
-                    var form = jQuery("#sys_user_edit_form");
-                    var row = dg.datagrid('getSelected');
-                    if(row){
-                        jQuery("#id",form).val(row.id);
-                        form.submit();
+                    var rows = dg.datagrid("getSelections");
+                    if(rows.length == 1){
+                        tabRefresh("/sys_user/edit?id="+rows[0].id);
                     } else {
                         jQuery.messager.show({msg: "Please Select One Record!"});
                     }
@@ -30,17 +32,34 @@ jQuery(function () {
                 iconCls: "icon-remove",
                 text: "Remove",
                 handler: function(){
-                    var form = jQuery("#sys_user_remove_form");
-                    var row = dg.datagrid('getSelected');
-                    if(row){
-                        jQuery("#id",form).val(row.id);
-                        form.submit();
-                    } else {
+                    var rows = dg.datagrid("getSelections");
+                    if(rows.length > 0){
+                        jQuery.messager.confirm('', 'Are you sure remove selected records?', function(r){
+                            if (r){
+
+                                var form = jQuery("#sys_user_remove_form");
+                                var url = form.attr("action");
+                                var ids = [];
+                                jQuery.each(rows,function (i,e) {
+                                    ids.push(e.id);
+                                });
+                                jQuery("#ids",form).val(ids.join());
+                                form.form('submit',{
+                                    url: url,
+                                    success: function () {
+                                        dg.datagrid('reload');
+                                    }
+                                });
+
+                            }
+                        });
+                    }else{
                         jQuery.messager.show({msg: "Please Select One Record!"});
                     }
                 }
             }],
             columns : [[
+                {field: "id",checkbox:true},
                 {field: "username",title: "用户名"},
                 {field: "viewname",title: "显示名"}
             ]]

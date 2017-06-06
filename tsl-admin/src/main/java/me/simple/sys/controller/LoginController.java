@@ -4,6 +4,7 @@ import me.simple.domain.CurrentUser;
 import me.simple.domain.LoginUser;
 import me.simple.domain.SysUser;
 import me.simple.sys.service.SysUserService;
+import me.simple.web.method.support.LoginedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +37,11 @@ public class LoginController {
 
     @RequestMapping(value = {"login"}, method = RequestMethod.POST)
     public String login(
-                        LoginUser loginUser, BindingResult bindingResult,
-                        WebRequest webRequest,
-                        Model model) {
-String username = loginUser.getUsername();
-String password = loginUser.getPassword();
+            LoginUser loginUser, BindingResult bindingResult,
+            WebRequest webRequest,
+            Model model) {
+        String username = loginUser.getUsername();
+        String password = loginUser.getPassword();
         logger.info("process user login {}:{}", username, password);
         SysUser sysUser = sysUserService.getByUsername(username);
         if(sysUser == null){
@@ -57,5 +58,18 @@ String password = loginUser.getPassword();
         currentUser.setViewname(sysUser.getViewname());
         webRequest.setAttribute("currentUser",currentUser, RequestAttributes.SCOPE_SESSION);
         return "redirect:/index";
+    }
+
+
+
+    @RequestMapping(value = {"logout"}, method = RequestMethod.GET)
+    public String logout(
+            /*LoginUser loginUser, BindingResult bindingResult,*/
+            @LoginedUser CurrentUser currentUser,
+            WebRequest webRequest,
+            Model model) {
+        logger.info("process user ({}) logout", currentUser.getUsername());
+        webRequest.removeAttribute("currentUser", RequestAttributes.SCOPE_SESSION);
+        return "redirect:/";
     }
 }

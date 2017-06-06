@@ -1,5 +1,6 @@
 package me.simple.sys.service.impl;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import me.simple.domain.CurrentUser;
 import me.simple.domain.Pageable;
@@ -61,12 +62,20 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public int remove(SysUser sysUser, CurrentUser currentUser) {
+        int aff = 0;
         String user = currentUser.getUsername();
         Timestamp time = new Timestamp(System.currentTimeMillis());
 
         sysUser.setMduser(user);
         sysUser.setMdtime(time);
-        return namedParameterJdbcTemplate.update(SQLUtil.generateRemoveSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(sysUser));
+
+        String ids = sysUser.getIds();
+        List<String> idlist = Splitter.on(",").splitToList(ids);
+        for (String id :idlist) {
+            sysUser.setId(Integer.parseInt(id));
+            aff += namedParameterJdbcTemplate.update(SQLUtil.generateRemoveSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(sysUser));
+        }
+        return aff;
     }
 
     @Override

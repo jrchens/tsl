@@ -22,7 +22,12 @@
 <div class="easyui-layout" data-options="fit:true">
 
 
-    <div data-options="region:'north'" style="height:50px">${currentUser.viewname} Exit</div>
+    <div data-options="region:'north'" style="height:32px">
+        <div style="float: right; display: inline; height: 22px; line-height: 22px; padding: 4px">
+            <div style="float: left; display: inline; margin-right: 12px;">${currentUser.viewname}</div>
+            <div style="float: left; display: inline; margin-right: 12px;"><a href="/logout">Exit</a> </div>
+        </div>
+    </div>
 
 
     <div data-options="region:'south',split:true" style="height:50px;">copy right</div>
