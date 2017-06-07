@@ -1,0 +1,186 @@
+package com.hdty.backend.controller;
+
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
+
+import com.google.common.collect.Maps;
+import com.hdty.backend.entity.${ClazzName};
+import com.hdty.backend.entity.Paging;
+import com.hdty.backend.service.${ClazzName}Service;
+import com.hdty.backend.service.MenuService;
+import com.hdty.backend.validation.group.Query;
+import com.hdty.backend.validation.group.Create;
+import com.hdty.backend.validation.group.Save;
+import com.hdty.backend.validation.group.Edit;
+import com.hdty.backend.validation.group.Update;
+import com.hdty.backend.validation.group.Remove;
+import com.hdty.exception.BusinessException;
+import com.hdty.utils.Constants;
+import com.hdty.utils.ExceptionUtil;
+
+@Controller
+@RequestMapping("${modepath}")
+public class ${ClazzName}Controller {
+  private static final Logger logger = LoggerFactory.getLogger(${ClazzName}Controller.class);
+
+  @Autowired
+  private ${ClazzName}Service ${clazzName}Service;
+  @Autowired
+  private MenuService menuService;
+
+  @RequestMapping(value = "index", method = RequestMethod.GET)
+  public String index(String nodeId, ${ClazzName} ${clazzName}, Model model, WebRequest request) 
+    throws Exception {
+    try {
+      menuService.getMenuPath(nodeId, request);
+      model.addAttribute(${clazzName});
+    } catch (Exception e) {
+      throw ExceptionUtil.throwControllerException("index.error", e, request);
+    }
+    return "/jsp/${modepath}/index";
+  }
+
+  @RequestMapping(value = "query", method = RequestMethod.GET)
+  @ResponseBody
+  public ResponseEntity<Map<String, Object>> query(@Validated(value = { Query.class }) ${ClazzName} ${clazzName}, Paging paging, Model model, WebRequest request) 
+    throws Exception {
+
+    String message = "success";
+    HttpStatus status = HttpStatus.OK;
+    ResponseEntity<Map<String, Object>> result = null;
+    Map<String, Object> responseData = Maps.newHashMap();
+    try {
+      Map<String, Object> data = Maps.newHashMap();
+      data.put("rows", ${clazzName}Service.query(${clazzName}, paging));
+      data.put("total", paging.getTotal());
+
+      responseData.put("code", status.value());
+      responseData.put("data", data);
+      responseData.put("message", message);
+    } catch (Exception e) {
+      message = "error";
+      if (e instanceof BusinessException) {
+        message = e.getMessage();
+      } else {
+        logger.error(message, e);
+      }
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
+      responseData.put("code", status.value());
+      responseData.put("data", Constants.EMPTY_DATAGRID_DATA);
+      responseData.put("message", message);
+    }
+    result = new ResponseEntity<Map<String, Object>>(responseData, status);
+    return result;
+  }
+
+  @RequestMapping(value = "create", method = RequestMethod.GET)
+  public String create(@Validated(value = { Create.class }) ${ClazzName} ${clazzName}, BindingResult bindingResult, Model model, WebRequest request) 
+      throws Exception {
+    try {
+      if (!bindingResult.hasErrors()) {
+        model.addAttribute(${clazzName});
+      }
+    } catch (Exception e) {
+      throw ExceptionUtil.throwControllerException("create.error", e, request);
+    }
+    return "/jsp/${modepath}/create";
+  }
+
+  @RequestMapping(value = "save", method = RequestMethod.POST)
+  public String save(@Validated(value = { Save.class }) ${ClazzName} ${clazzName}, BindingResult bindingResult, Model model, WebRequest request) 
+      throws Exception {
+    try {
+      if (bindingResult.hasErrors()) {
+        logger.error("{}", bindingResult.getAllErrors());
+        return create(${clazzName}, bindingResult, model, request);
+      }
+      ${clazzName}Service.save(${clazzName});
+    } catch (Exception e) {
+      throw ExceptionUtil.throwControllerException("save.error", e, request);
+    }
+    return "redirect:/${modepath}/edit.jspx?id=" + ${clazzName}.getId();
+  }
+
+  @RequestMapping(value = "edit", method = RequestMethod.GET)
+  public String edit(@Validated(value = { Edit.class }) ${ClazzName} ${clazzName}, BindingResult bindingResult, Model model, WebRequest request) 
+    throws Exception {
+    try {
+      if (!bindingResult.hasErrors()) {
+        model.addAttribute(${clazzName}Service.get(${clazzName}));
+      }
+    } catch (Exception e) {
+      throw ExceptionUtil.throwControllerException("edit.error", e, request);
+    }
+    return "/jsp/${modepath}/edit";
+  }
+
+  @RequestMapping(value = "update", method = RequestMethod.POST)
+  public String update(@Validated(value = { Update.class }) ${ClazzName} ${clazzName}, BindingResult bindingResult, Model model, WebRequest request) 
+    throws Exception {
+    try {
+      if (bindingResult.hasErrors()) {
+        logger.error("{}", bindingResult.getAllErrors());
+        return edit(${clazzName}, bindingResult, model,request);
+      }
+      ${clazzName}Service.update(${clazzName});
+    } catch (Exception e) {
+      throw ExceptionUtil.throwControllerException("update.error", e, request);
+    }
+    return "redirect:/${modepath}/index.jspx";
+  }
+
+  @RequestMapping(value = "remove", method = RequestMethod.POST)
+  @ResponseBody
+  public ResponseEntity<Map<String, Object>> remove(@Validated(value = { Remove.class }) ${ClazzName} ${clazzName}, BindingResult bindingResult, Model model, WebRequest request) 
+      throws Exception {
+
+    HttpStatus status = HttpStatus.OK;
+    ResponseEntity<Map<String, Object>> result = null;
+    Map<String, Object> responseData = Maps.newHashMap();
+    Map<String, Object> data = Maps.newHashMap();
+    String message = "success";
+    try {
+
+      if (bindingResult.hasErrors()) {
+        logger.error("{}", bindingResult.getAllErrors());
+        throw new BusinessException();
+      }
+
+      int rows = ${clazzName}Service.remove(${clazzName});
+
+      data.put("rows", rows);
+      data.put("data", request.getAttribute(Constants.CSRF_TOKEN, 1));
+
+      responseData.put("code", status.value());
+      responseData.put("data", data);
+      responseData.put("message", message);
+    } catch (Exception e) {
+      message = "error";
+      if (e instanceof BusinessException) {
+        message = e.getMessage();
+      } else {
+        logger.error(message, e);
+      }
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
+      data.put("data", request.getAttribute(Constants.CSRF_TOKEN, 1));
+      responseData.put("code", status.value());
+      responseData.put("data", data);
+      responseData.put("message", message);
+    }
+    result = new ResponseEntity<Map<String, Object>>(responseData, status);
+    return result;
+  }
+}

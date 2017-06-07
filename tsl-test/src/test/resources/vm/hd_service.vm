@@ -1,0 +1,14 @@
+package com.hdty.backend.service;
+
+import java.util.List;
+
+import com.hdty.backend.entity.${ClazzName};
+import com.hdty.backend.entity.Paging;
+
+public interface ${ClazzName}Service {
+    public int save(${ClazzName} ${clazzName});
+    public int remove(${ClazzName} ${clazzName});
+    public int update(${ClazzName} ${clazzName});
+    public ${ClazzName} get(${ClazzName} ${clazzName});
+    public List<${ClazzName}> query(${ClazzName} ${clazzName}, Paging paging);
+}

@@ -1,0 +1,89 @@
+package com.hdty.backend.service.impl;
+
+import com.google.common.collect.Lists;
+import com.hdty.backend.entity.${ClazzName};
+import com.hdty.backend.entity.Paging;
+import com.hdty.backend.service.${ClazzName}Service;
+import com.hdty.utils.SQLUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import javax.sql.DataSource;
+import java.sql.Timestamp;
+import java.util.List;
+
+@Service
+@Transactional
+public class ${ClazzName}ServiceImpl implements ${ClazzName}Service {
+
+    private static final Logger logger = LoggerFactory.getLogger(${ClazzName}Service.class);
+    public static final String tableName = "${tablename}";
+    private static final String generatedKeyName = "id";
+    private static final List<String> insertColumns = Lists.newArrayList("cruser","crtime");
+    private static final List<String> updateColumns = Lists.newArrayList("mduser","mdtime");
+
+    private SimpleJdbcInsert simpleJdbcInsert;
+    private JdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Autowired
+    public void setDataSource(DataSource dataSource){
+        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource);
+        this.simpleJdbcInsert.setTableName(tableName);
+        this.simpleJdbcInsert.setGeneratedKeyName(generatedKeyName);
+        this.simpleJdbcInsert.setColumnNames(insertColumns);
+
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+    }
+
+    @Override
+    public int save(${ClazzName} ${clazzName}) {
+        int id = simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(${clazzName})).intValue();
+        ${clazzName}.setId(id);
+        return id;
+    }
+
+    @Override
+    public int remove(${ClazzName} ${clazzName}) {
+        return namedParameterJdbcTemplate.update(SQLUtil.generateRemoveSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(${clazzName}));
+    }
+
+    @Override
+    public int update(${ClazzName} ${clazzName}) {
+        return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName,updateColumns,generatedKeyName),new BeanPropertySqlParameterSource(${clazzName}));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ${ClazzName} get(${ClazzName} ${clazzName}) {
+        return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(${clazzName}),new BeanPropertyRowMapper<${ClazzName}>(${ClazzName}.class));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<${ClazzName}> query(${ClazzName} ${clazzName} , Paging paging) {
+        List<Object> args = Lists.newArrayList();
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("SELECT * FROM ").append(tableName).append(" ");
+        buffer.append("WHERE deleted = 0 ");
+
+        int total = jdbcTemplate.queryForObject(SQLUtil.generateCountSQL(buffer.toString()),args.toArray(),Integer.class);
+        paging.setTotal(total);
+
+        SQLUtil.sortingAndPaging(buffer,paging);
+
+        return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<${ClazzName}>(${ClazzName}.class));
+    }
+}
