@@ -67,6 +67,18 @@ public class SQLUtil {
         return buffer.toString();
     }
 
+    public static String generateGetSql(String tableName, String primaryKey,boolean filterDeleted) {
+        StringBuffer buffer = new StringBuffer("SELECT * FROM ");
+        buffer.append(tableName).append(" ");
+        if (filterDeleted) {
+            buffer.append("WHERE deleted=0 ");
+        }else {
+            buffer.append("WHERE 1 = 1 ");
+        }
+        buffer.append(" AND ").append(primaryKey).append("=:").append(primaryKey);
+        return buffer.toString();
+    }
+
     public static String generateCountSQL(String querySql) {
         StringBuffer buffer = new StringBuffer(querySql);
         int index = querySql.toLowerCase().indexOf(" from ");

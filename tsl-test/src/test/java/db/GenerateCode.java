@@ -57,14 +57,18 @@ public class GenerateCode {
             // show columns from sys_user;
             // DESCRIBE sys_user
             List<Map<String,String>> fields = Lists.newArrayList();
-            // String generateBaseDir = "/Users/chensheng/IdeaProjects/tsl";
-            // String packageName = "/tsl-common/src/main/java/me/simple";
-            String generateBaseDir = "D:/CS/svn/jrcredit/trunk/hdty";
-            String packageName = "/common/src/main/java/com/hdty/backend";
-            String tablename = "cs_objection";
-            String clazzName = "objection";
-            String modepath = "objection";
-            String vmprefix = "hd_";
+
+            String generateBaseDir = "/Users/chensheng/IdeaProjects/tsl";
+            String domainPackageName = "/tsl-common/src/main/java/me/simple";
+            String servicePackageName = "/tsl-common/src/main/java/me/simple/sys";
+            String webPackageName = "/tsl-admin/src/main/java/me/simple/sys";
+
+//            String generateBaseDir = "D:/CS/svn/jrcredit/trunk/hdty";
+//            String packageName = "/common/src/main/java/com/hdty/backend";
+            String tablename = "sys_group";
+            String clazzName = "sysGroup";
+            String modepath = "sys_group";
+            String vmprefix = "";
             String ClazzName = StringUtils.capitalize(clazzName);
             
 
@@ -121,22 +125,22 @@ public class GenerateCode {
             context.put("fields", fields);
 
             Template pojoTemplate = Velocity.getTemplate(vmprefix+"pojo.vm");
-            Writer pojoWriter = new FileWriter(new File(generateBaseDir + packageName + "/entity/"+ClazzName+".java"));
+            Writer pojoWriter = new FileWriter(new File(generateBaseDir + domainPackageName + "/domain/"+ClazzName+".java"));
             pojoTemplate.merge(context, pojoWriter);
             IOUtils.closeQuietly(pojoWriter);
 
             Template serviceTemplate = Velocity.getTemplate(vmprefix+"service.vm");
-            Writer serviceWriter = new FileWriter(new File(generateBaseDir + packageName + "/service/"+ClazzName+"Service.java"));
+            Writer serviceWriter = new FileWriter(new File(generateBaseDir + servicePackageName + "/service/"+ClazzName+"Service.java"));
             serviceTemplate.merge(context, serviceWriter);
             IOUtils.closeQuietly(serviceWriter);
 
             Template serviceImplTemplate = Velocity.getTemplate(vmprefix+"service.impl.vm");
-            Writer serviceImplWriter = new FileWriter(new File(generateBaseDir + packageName + "/service/impl/"+ClazzName+"ServiceImpl.java"));
+            Writer serviceImplWriter = new FileWriter(new File(generateBaseDir + servicePackageName + "/service/impl/"+ClazzName+"ServiceImpl.java"));
             serviceImplTemplate.merge(context, serviceImplWriter);
             IOUtils.closeQuietly(serviceImplWriter);
 
             Template controllerTemplate = Velocity.getTemplate(vmprefix+"controller.vm");
-            Writer controllerWriter = new FileWriter(new File(generateBaseDir + packageName + "/controller/"+ClazzName+"Controller.java"));
+            Writer controllerWriter = new FileWriter(new File(generateBaseDir + webPackageName + "/controller/"+ClazzName+"Controller.java"));
             controllerTemplate.merge(context, controllerWriter);
             IOUtils.closeQuietly(controllerWriter);
         } catch (Exception e) {

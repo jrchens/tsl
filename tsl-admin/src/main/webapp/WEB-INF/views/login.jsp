@@ -24,13 +24,13 @@
     <form:form id="user_login_form" servletRelativeAction="/login" commandName="loginUser" cssClass="easyui-form" method="post"
         data-options="novalidate:true,ajax:false,iframe:false" cssStyle="padding: 10px;width: 400px; height: 100px;">
         <div style="margin-bottom:10px">
-            <form:input path="username" cssClass="easyui-textbox" cssStyle="width:100%" data-options="label:'用户名:',required:true,validType:{length:[4,18]}"/>
+            <form:input path="username" cssClass="easyui-textbox" cssStyle="width:100%" data-options="label:'用户名:',required:true,validType:{length:[4,18]},value:'admin'"/>
             <form:errors path="username"/>
         </div>
 
         <div style="margin-bottom:10px">
             <form:password path="password" cssClass="easyui-passwordbox" cssStyle="width:100%"
-                        data-options="label:'密&#12288;码:',required:true,validType:{length:[4,18]}"/>
+                        data-options="label:'密&#12288;码:',required:true,validType:{length:[4,18]},value:'123456'"/>
             <form:errors path="password"/>
         </div>
 

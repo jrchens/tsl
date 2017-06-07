@@ -2,9 +2,16 @@ package me.simple.domain;
 
 public class SysGroup extends Base {
 
+private int id;
 private String groupname;
 private String viewname;
 
+public int getId(){
+  return id;
+}
+public void setId(int id){
+  this.id = id;
+}
 public String getGroupname(){
   return groupname;
 }

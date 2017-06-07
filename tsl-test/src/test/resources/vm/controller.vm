@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,24 +45,66 @@ public class ${ClazzName}Controller {
         return "${tablename}/create";
     }
 
-    @RequestMapping(value = "save", method = RequestMethod.POST)
-    public String save(@Validated(value = {Save.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+//    @RequestMapping(value = "save", method = RequestMethod.POST)
+//    public String save(@Validated(value = {Save.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+//
+//        if (bindingResult.hasErrors()) {
+//            return "${tablename}/create";
+//        }
+//        ${clazzName}Service.save(${clazzName}, currentUser);
+//        return "redirect:/${tablename}/index";
+//    }
+
+
+    @RequestMapping(value = "save.json", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> asave(@Validated(value = {Save.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+        boolean success = true;
+        String message = null;
+        Map<String,Object> body = Maps.newHashMap();
 
         if (bindingResult.hasErrors()) {
-            return "${tablename}/create";
+            success = false;
+
+        }else{
+            ${clazzName}Service.save(${clazzName}, currentUser);
         }
-        ${clazzName}Service.save(${clazzName}, currentUser);
-        return "redirect:/${tablename}/index";
+
+        body.put("success",success);
+        body.put("message",message);
+
+        return ResponseEntity.ok(body);
     }
 
-    @RequestMapping(value = "remove", method = RequestMethod.POST)
-    public String remove(@Validated(value = {Remove.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+//    @RequestMapping(value = "remove", method = RequestMethod.POST)
+//    public String remove(@Validated(value = {Remove.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+//
+//        if (bindingResult.hasErrors()) {
+//            return "${tablename}/index";
+//        }
+//        ${clazzName}Service.remove(${clazzName}, currentUser);
+//        return "redirect:/${tablename}/index";
+//    }
+
+
+    @RequestMapping(value = "remove.json", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> aremove(/*@Validated(value = {Remove.class}) */${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+    
+        boolean success = true;
+        String message = null;
+        Map<String,Object> body = Maps.newHashMap();
 
         if (bindingResult.hasErrors()) {
-            return "${tablename}/index";
+            success = false;
+        }else{
+            ${clazzName}Service.remove(${clazzName}, currentUser);
         }
-        ${clazzName}Service.remove(${clazzName}, currentUser);
-        return "redirect:/${tablename}/index";
+
+        body.put("success",success);
+        body.put("message",message);
+
+        return ResponseEntity.ok(body);
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
@@ -74,14 +117,42 @@ public class ${ClazzName}Controller {
         return "${tablename}/edit";
     }
 
-    @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String update(@Validated(value = {Update.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+//    @RequestMapping(value = "update", method = RequestMethod.POST)
+//    public String update(@Validated(value = {Update.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+//
+//        if (bindingResult.hasErrors()) {
+//            return "${tablename}/edit";
+//        }
+//        ${clazzName}Service.update(${clazzName}, currentUser);
+//        return "redirect:/${tablename}/index";
+//    }
 
+
+    @RequestMapping(value = "update.json", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> aupdate(@Validated(value = {Update.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+    
+        boolean success = true;
+        String message = null;
+        Map<String,Object> body = Maps.newHashMap();
+        
         if (bindingResult.hasErrors()) {
-            return "${tablename}/edit";
+            List<FieldError> fes = bindingResult.getFieldErrors();
+    
+            for (FieldError fe: fes
+            ) {
+            fe.getField();
+            fe.getRejectedValue();
+            }
+            success = false;
+        }else{
+             ${clazzName}Service.update( ${clazzName}, currentUser);
         }
-        ${clazzName}Service.update(${clazzName}, currentUser);
-        return "redirect:/${tablename}/index";
+    
+        body.put("success",success);
+        body.put("message",message);
+    
+        return ResponseEntity.ok(body);
     }
 
     @RequestMapping(value = "query", method = RequestMethod.GET)

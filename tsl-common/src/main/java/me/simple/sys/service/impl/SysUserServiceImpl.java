@@ -85,6 +85,15 @@ public class SysUserServiceImpl implements SysUserService {
 
         sysUser.setMduser(user);
         sysUser.setMdtime(time);
+
+        // password empty process
+        String password = sysUser.getPassword();
+        if(!StringUtils.hasText(password)){
+            SysUser clone = get(sysUser,currentUser);
+            sysUser.setPassword(clone.getPassword());
+        }
+
+
         return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName,updateColumns,generatedKeyName),new BeanPropertySqlParameterSource(sysUser));
     }
 

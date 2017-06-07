@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,18 +48,18 @@ public class SysUserController {
         return "sys_user/create";
     }
 
-    @RequestMapping(value = "save", method = RequestMethod.POST)
-    public String save(@Validated(value = {Save.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
-        // username exists
-        if (sysUserService.getByUsername(sysUser.getUsername()) != null) {
-            bindingResult.rejectValue("username", "value.exists", new Object[]{sysUser.getUsername()}, "value.exists");
-        }
-        if (bindingResult.hasErrors()) {
-            return "sys_user/create";
-        }
-        sysUserService.save(sysUser, currentUser);
-        return "redirect:/sys_user/index";
-    }
+//    @RequestMapping(value = "save", method = RequestMethod.POST)
+//    public String save(@Validated(value = {Save.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+//        // username exists
+//        if (sysUserService.getByUsername(sysUser.getUsername()) != null) {
+//            bindingResult.rejectValue("username", "value.exists", new Object[]{sysUser.getUsername()}, "value.exists");
+//        }
+//        if (bindingResult.hasErrors()) {
+//            return "sys_user/create";
+//        }
+//        sysUserService.save(sysUser, currentUser);
+//        return "redirect:/sys_user/index";
+//    }
 
 
     @RequestMapping(value = "save.json", method = RequestMethod.POST)
@@ -84,15 +85,15 @@ public class SysUserController {
         return ResponseEntity.ok(body);
     }
 
-    @RequestMapping(value = "remove", method = RequestMethod.POST)
-    public String remove(@Validated(value = {Remove.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
-
-        if (bindingResult.hasErrors()) {
-            return "sys_user/index";
-        }
-        sysUserService.remove(sysUser, currentUser);
-        return "redirect:/sys_user/index";
-    }
+//    @RequestMapping(value = "remove", method = RequestMethod.POST)
+//    public String remove(@Validated(value = {Remove.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+//
+//        if (bindingResult.hasErrors()) {
+//            return "sys_user/index";
+//        }
+//        sysUserService.remove(sysUser, currentUser);
+//        return "redirect:/sys_user/index";
+//    }
 
 
     @RequestMapping(value = "remove.json", method = RequestMethod.POST)
@@ -124,15 +125,15 @@ public class SysUserController {
         return "sys_user/edit";
     }
 
-    @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String update(@Validated(value = {Update.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
-
-        if (bindingResult.hasErrors()) {
-            return "sys_user/edit";
-        }
-        sysUserService.update(sysUser, currentUser);
-        return "redirect:/sys_user/index";
-    }
+//    @RequestMapping(value = "update", method = RequestMethod.POST)
+//    public String update(@Validated(value = {Update.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+//
+//        if (bindingResult.hasErrors()) {
+//            return "sys_user/edit";
+//        }
+//        sysUserService.update(sysUser, currentUser);
+//        return "redirect:/sys_user/index";
+//    }
 
     @RequestMapping(value = "update.json", method = RequestMethod.POST)
     @ResponseBody
@@ -143,6 +144,13 @@ public class SysUserController {
         Map<String,Object> body = Maps.newHashMap();
 
         if (bindingResult.hasErrors()) {
+            List<FieldError> fes = bindingResult.getFieldErrors();
+
+            for (FieldError fe: fes
+                 ) {
+                fe.getField();
+                fe.getRejectedValue();
+            }
             success = false;
         }else{
             sysUserService.update(sysUser, currentUser);

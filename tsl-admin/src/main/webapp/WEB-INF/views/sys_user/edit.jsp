@@ -23,7 +23,7 @@
     <form:form id="sys_user_update_form" method="post" servletRelativeAction="/sys_user/update.json" commandName="sysUser">
         <form:hidden path="id"/>
         <div style="margin-bottom:20px">
-            <form:input path="username" cssClass="easyui-textbox"  data-options="label:'username:',required:true" cssStyle="width: 100%;"/>
+            <form:input path="username" cssClass="easyui-textbox"  data-options="label:'username:',required:true,editable:false" cssStyle="width: 100%;"/>
             <form:errors path="username" />
         </div>
         <div style="margin-bottom:20px">
@@ -31,7 +31,7 @@
             <form:errors path="viewname" />
         </div>
         <div style="margin-bottom:20px">
-            <form:password path="password" cssClass="easyui-passwordbox"  data-options="label:'password:'" cssStyle="width: 100%;"/>
+            <form:password path="password" cssClass="easyui-tooltip easyui-passwordbox"  data-options="label:'password:'" cssStyle="width: 100%;"/>
             <form:errors path="password" />
         </div>
         <div style="text-align:center;padding:5px 0">

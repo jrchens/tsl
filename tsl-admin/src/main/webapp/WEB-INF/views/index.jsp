@@ -56,6 +56,7 @@
         <div class="easyui-accordion" data-options="fit:true,border:false">
             <div title="System" style="padding:10px;">
                 <div class="menu-link"><a id="1" href="javascript:;">User Manager</a></div>
+                <div class="menu-link"><a id="3" href="javascript:;">Group Manager</a></div>
                 <div class="menu-link"><a id="2" href="javascript:;">Role Manager</a></div>
             </div>
         </div>

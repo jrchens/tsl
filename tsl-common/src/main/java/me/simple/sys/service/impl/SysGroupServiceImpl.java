@@ -1,14 +1,17 @@
 package me.simple.sys.service.impl;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import me.simple.domain.CurrentUser;
 import me.simple.domain.Pageable;
-import me.simple.domain.${ClazzName};
-import me.simple.sys.service.${ClazzName}Service;
+import me.simple.domain.SysGroup;
+import me.simple.domain.SysUser;
+import me.simple.sys.service.SysGroupService;
 import me.simple.util.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -24,13 +27,13 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ${ClazzName}ServiceImpl implements ${ClazzName}Service {
+public class SysGroupServiceImpl implements SysGroupService {
 
-    private static final Logger logger = LoggerFactory.getLogger(${ClazzName}Service.class);
-    public static final String tableName = "${tablename}";
+    private static final Logger logger = LoggerFactory.getLogger(SysGroupService.class);
+    public static final String tableName = "sys_group";
     private static final String generatedKeyName = "id";
-    private static final List<String> insertColumns = Lists.newArrayList("cruser","crtime");
-    private static final List<String> updateColumns = Lists.newArrayList("mduser","mdtime");
+    private static final List<String> insertColumns = Lists.newArrayList("groupname","viewname","cruser","crtime");
+    private static final List<String> updateColumns = Lists.newArrayList("viewname","mduser","mdtime");
 
     private SimpleJdbcInsert simpleJdbcInsert;
     private JdbcTemplate jdbcTemplate;
@@ -49,53 +52,52 @@ public class ${ClazzName}ServiceImpl implements ${ClazzName}Service {
     }
 
     @Override
-    public int save(${ClazzName} ${clazzName} , CurrentUser currentUser) {
+    public int save(SysGroup sysGroup , CurrentUser currentUser) {
         String user = currentUser.getUsername();
         Timestamp time = new Timestamp(System.currentTimeMillis());
 
-        ${clazzName}.setCruser(user);
-        ${clazzName}.setCrtime(time);
-        return simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(${clazzName})).intValue();
+        sysGroup.setCruser(user);
+        sysGroup.setCrtime(time);
+        return simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(sysGroup)).intValue();
     }
 
     @Override
-    public int remove(${ClazzName} ${clazzName} , CurrentUser currentUser) {
+    public int remove(SysGroup sysGroup , CurrentUser currentUser) {
         String user = currentUser.getUsername();
         Timestamp time = new Timestamp(System.currentTimeMillis());
 
-        ${clazzName}.setMduser(user);
-        ${clazzName}.setMdtime(time);
+        sysGroup.setMduser(user);
+        sysGroup.setMdtime(time);
 
         int aff = 0;
-        String ids = ${clazzName}.getIds();
+        String ids = sysGroup.getIds();
         List<String> idlist = Splitter.on(",").splitToList(ids);
-            for (String id :idlist) {
-            ${clazzName}.setId(Integer.parseInt(id));
-            aff += namedParameterJdbcTemplate.update(SQLUtil.generateRemoveSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(${clazzName}));
+        for (String id :idlist) {
+            sysGroup.setId(Integer.parseInt(id));
+            aff += namedParameterJdbcTemplate.update(SQLUtil.generateRemoveSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(sysGroup));
         }
-
         return aff;
     }
 
     @Override
-    public int update(${ClazzName} ${clazzName} , CurrentUser currentUser) {
+    public int update(SysGroup sysGroup , CurrentUser currentUser) {
         String user = currentUser.getUsername();
         Timestamp time = new Timestamp(System.currentTimeMillis());
 
-        ${clazzName}.setMduser(user);
-        ${clazzName}.setMdtime(time);
-        return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName,updateColumns,generatedKeyName),new BeanPropertySqlParameterSource(${clazzName}));
+        sysGroup.setMduser(user);
+        sysGroup.setMdtime(time);
+        return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName,updateColumns,generatedKeyName),new BeanPropertySqlParameterSource(sysGroup));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ${ClazzName} get(${ClazzName} ${clazzName} , CurrentUser currentUser) {
-        return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(${clazzName}),new BeanPropertyRowMapper<${ClazzName}>(${ClazzName}.class));
+    public SysGroup get(SysGroup sysGroup , CurrentUser currentUser) {
+        return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(sysGroup),new BeanPropertyRowMapper<SysGroup>(SysGroup.class));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<${ClazzName}> query(${ClazzName} ${clazzName} , Pageable pageable, CurrentUser currentUser) {
+    public List<SysGroup> query(SysGroup sysGroup , Pageable pageable, CurrentUser currentUser) {
         List<Object> args = Lists.newArrayList();
         StringBuffer buffer = new StringBuffer();
         buffer.append("SELECT * FROM ").append(tableName).append(" ");
@@ -106,6 +108,20 @@ public class ${ClazzName}ServiceImpl implements ${ClazzName}Service {
 
         SQLUtil.sortingAndPaging(buffer,pageable);
 
-        return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<${ClazzName}>(${ClazzName}.class));
+        return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<SysGroup>(SysGroup.class));
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public SysGroup getByGroupname(String groupname) {
+        try {
+            SysGroup sysGroup = new SysGroup();
+            sysGroup.setGroupname(groupname);
+            return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName, "groupname",false), new BeanPropertySqlParameterSource(sysGroup), new BeanPropertyRowMapper<SysGroup>(SysGroup.class));
+        } catch (DataAccessException e) {
+            // groupname not exists
+            return null;
+        }
     }
 }
