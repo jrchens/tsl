@@ -25,3 +25,6 @@ folder,article,attachment,feedback
 1. echo -n "password" | openssl dgst -sha512 -hmac "username"
 2. uuidgen | sed s/-//g
 ```
+## exception
+@ControllerAdvice
+@ExceptionHandler
