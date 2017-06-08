@@ -58,16 +58,13 @@ public class GenerateCode {
             // DESCRIBE sys_user
             List<Map<String,String>> fields = Lists.newArrayList();
 
-            String generateBaseDir = "/Users/chensheng/IdeaProjects/tsl";
-            String domainPackageName = "/tsl-common/src/main/java/me/simple";
-            String servicePackageName = "/tsl-common/src/main/java/me/simple/sys";
-            String webPackageName = "/tsl-admin/src/main/java/me/simple/sys";
+            String generateBaseDir = "/Users/chensheng/IdeaProjects/generate";
 
 //            String generateBaseDir = "D:/CS/svn/jrcredit/trunk/hdty";
 //            String packageName = "/common/src/main/java/com/hdty/backend";
-            String tablename = "sys_group";
-            String clazzName = "sysGroup";
-            String modepath = "sys_group";
+            String tablename = "sys_role";
+            String clazzName = "sysRole";
+            String modepath = "sys_role";
             String vmprefix = "";
             String ClazzName = StringUtils.capitalize(clazzName);
             
@@ -78,27 +75,31 @@ public class GenerateCode {
                     columns) {
                 String fieldName = ObjectUtils.getDisplayString(field.get("Field"));
                 String fieldType = ObjectUtils.getDisplayString(field.get("Type"));
-                if (/*"id".equalsIgnoreCase(fieldName) || */"disabled".equalsIgnoreCase(fieldName)
+                /*if ("id".equalsIgnoreCase(fieldName) || "disabled".equalsIgnoreCase(fieldName)
                         || "deleted".equalsIgnoreCase(fieldName) || "cruser".equalsIgnoreCase(fieldName)
                         || "crtime".equalsIgnoreCase(fieldName) || "mduser".equalsIgnoreCase(fieldName)
                         || "mdtime".equalsIgnoreCase(fieldName)
                         ) {
                     continue;
-                }
+                }*/
 
                 Map<String, String> column = Maps.newHashMap();
                 String type = "String";
                 // int,tinyint,varchar,datetime,date
                 if (fieldType.startsWith("int")) {
                     type = "int";
+                }else if (fieldType.startsWith("bigint")) {
+                    type = "long";
+                }else if (fieldType.startsWith("double")) {
+                    type = "double";
                 }else if (fieldType.startsWith("tinyint")) {
                     type = "boolean";
                 }else if (fieldType.startsWith("datetime")) {
-                    type = "Timestamp";
+                    type = "java.sql.Timestamp";
                 }else if (fieldType.startsWith("date")) {
-                    type = "Date"; // java.sql.Date
+                    type = "java.sql.Date"; // java.sql.Date
                 }else if (fieldType.startsWith("time")) {
-                    type = "Time"; // java.sql.Time
+                    type = "java.sql.Time"; // java.sql.Time
                 }
                 String name = fieldName;
                 String Name = StringUtils.capitalize(fieldName);
@@ -125,24 +126,34 @@ public class GenerateCode {
             context.put("fields", fields);
 
             Template pojoTemplate = Velocity.getTemplate(vmprefix+"pojo.vm");
-            Writer pojoWriter = new FileWriter(new File(generateBaseDir + domainPackageName + "/domain/"+ClazzName+".java"));
+            Writer pojoWriter = new FileWriter(new File(generateBaseDir + "/"+ClazzName+".java"));
             pojoTemplate.merge(context, pojoWriter);
             IOUtils.closeQuietly(pojoWriter);
 
             Template serviceTemplate = Velocity.getTemplate(vmprefix+"service.vm");
-            Writer serviceWriter = new FileWriter(new File(generateBaseDir + servicePackageName + "/service/"+ClazzName+"Service.java"));
+            Writer serviceWriter = new FileWriter(new File(generateBaseDir + "/"+ClazzName+"Service.java"));
             serviceTemplate.merge(context, serviceWriter);
             IOUtils.closeQuietly(serviceWriter);
 
             Template serviceImplTemplate = Velocity.getTemplate(vmprefix+"service.impl.vm");
-            Writer serviceImplWriter = new FileWriter(new File(generateBaseDir + servicePackageName + "/service/impl/"+ClazzName+"ServiceImpl.java"));
+            Writer serviceImplWriter = new FileWriter(new File(generateBaseDir + "/impl/"+ClazzName+"ServiceImpl.java"));
             serviceImplTemplate.merge(context, serviceImplWriter);
             IOUtils.closeQuietly(serviceImplWriter);
 
             Template controllerTemplate = Velocity.getTemplate(vmprefix+"controller.vm");
-            Writer controllerWriter = new FileWriter(new File(generateBaseDir + webPackageName + "/controller/"+ClazzName+"Controller.java"));
+            Writer controllerWriter = new FileWriter(new File(generateBaseDir + "/"+ClazzName+"Controller.java"));
             controllerTemplate.merge(context, controllerWriter);
             IOUtils.closeQuietly(controllerWriter);
+
+
+            String[] vms = {"index.js","index.jsp","create.js","create.jsp","edit.js","edit.jsp"};
+            for (String vm: vms) {
+                Template tmpl = Velocity.getTemplate(vmprefix+vm+".vm");
+                Writer writer = new FileWriter(new File(generateBaseDir + "/" + vm));
+                tmpl.merge(context, writer);
+                IOUtils.closeQuietly(writer);
+            }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

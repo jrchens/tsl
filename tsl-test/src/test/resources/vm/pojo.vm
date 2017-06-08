@@ -1,10 +1,18 @@
 package me.simple.domain;
 
-public class ${ClazzName} extends Base {
+import me.simple.validator.group.Remove;
+import org.hibernate.validator.constraints.Length;
+
+public class ${ClazzName} implements java.io.Serializable {
 
 #foreach(${field} in ${fields})
 private ${field.type} ${field.name};
 #end
+
+// ============================================================
+@Length(min = 1,max = 200,groups = {Remove.class})
+private String ids;
+// ============================================================
 
 #foreach(${field} in ${fields})
 public ${field.type} get${field.Name}(){
@@ -14,4 +22,13 @@ public void set${field.Name}(${field.type} ${field.name}){
   this.${field.name} = ${field.name};
 }
 #end
+
+public String getIds() {
+  return ids;
+}
+
+public void setIds(String ids) {
+  this.ids = ids;
+}
+
 }
