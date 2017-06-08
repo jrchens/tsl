@@ -32,7 +32,6 @@ public class SysGroupController {
     @Autowired
     private SysGroupService sysGroupService;
 
-
     @Autowired
     private MessageSource messageSource;
 
@@ -78,12 +77,9 @@ public class SysGroupController {
         if (bindingResult.hasErrors()) {
             success = false;
             List<FieldError> feList = bindingResult.getFieldErrors();
-            for (FieldError fe: feList
-                 ) {
-                data.put(fe.getField(),
-                        messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+            for (FieldError fe: feList) {
+                data.put(fe.getField(), messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
             }
-
         }else{
             sysGroupService.save(sysGroup, currentUser);
         }
@@ -114,13 +110,19 @@ public class SysGroupController {
         String message = null;
         Map<String,Object> body = Maps.newHashMap();
 
+        Map<String,Object> data = Maps.newHashMap();
         if (bindingResult.hasErrors()) {
             success = false;
+            List<FieldError> feList = bindingResult.getFieldErrors();
+            for (FieldError fe: feList) {
+                data.put(fe.getField(), messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+            }
         }else{
             sysGroupService.remove(sysGroup, currentUser);
         }
 
         body.put("success",success);
+        body.put("data",data);
         body.put("message",message);
 
         return ResponseEntity.ok(body);
@@ -154,21 +156,20 @@ public class SysGroupController {
         boolean success = true;
         String message = null;
         Map<String,Object> body = Maps.newHashMap();
-        
+
+        Map<String,Object> data = Maps.newHashMap();
         if (bindingResult.hasErrors()) {
-            List<FieldError> fes = bindingResult.getFieldErrors();
-    
-            for (FieldError fe: fes
-            ) {
-            fe.getField();
-            fe.getRejectedValue();
-            }
             success = false;
+            List<FieldError> feList = bindingResult.getFieldErrors();
+            for (FieldError fe: feList) {
+                data.put(fe.getField(), messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+            }
         }else{
              sysGroupService.update( sysGroup, currentUser);
         }
-    
+
         body.put("success",success);
+        body.put("data",data);
         body.put("message",message);
     
         return ResponseEntity.ok(body);
@@ -189,14 +190,4 @@ public class SysGroupController {
         return ResponseEntity.ok(body);
     }
 
-
-
-    @RequestMapping(value = "groupname_query.json", method = RequestMethod.GET)
-    @ResponseBody
-    public boolean queryGroupname(/*@Validated(value = {Query.class}) SysGroup sysGroup, BindingResult bindingResult,
-                                                     Pageable pageable, */
-                                                     String groupname,
-                                                     @LoginedUser CurrentUser currentUser, Model model) {
-        return sysGroupService.getByGroupname(groupname) == null;
-    }
 }
