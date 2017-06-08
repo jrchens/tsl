@@ -5,7 +5,8 @@ import java.util.List;
 /**
  * Created by chensheng on 17/5/28.
  */
-public class CurrentUser {
+public class CurrentUser implements java.io.Serializable {
+    private static final long serialVersionUID = 125164760918002890L;
     private int id;
     private String username;
     private String viewname;

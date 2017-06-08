@@ -46,8 +46,19 @@ jQuery(function () {
                                 jQuery("#ids",form).val(ids.join());
                                 form.form('submit',{
                                     url: url,
-                                    success: function () {
-                                        dg.datagrid('reload');
+                                    success: function (data) {
+                                        data = jQuery.parseJSON(data);
+                                        if(data.success){
+                                            dg.datagrid('reload');
+                                        }else{
+                                            var errors = data.data;
+                                            var s = [];
+                                            for (var k in errors){
+                                                s.push(k+" : "+errors[k]);
+                                            }
+                                            jQuery.messager.show({msg: s.join("<br>")});
+                                        }
+
                                     }
                                 });
 

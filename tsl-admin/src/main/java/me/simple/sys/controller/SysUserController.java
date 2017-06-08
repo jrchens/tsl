@@ -10,6 +10,7 @@ import me.simple.web.method.support.LoginedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,9 @@ public class SysUserController {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @RequestMapping(value = "index", method = RequestMethod.GET)
     public String index(@Validated(value = {Index.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
@@ -72,14 +76,21 @@ public class SysUserController {
         if (sysUserService.getByUsername(sysUser.getUsername()) != null) {
             bindingResult.rejectValue("username", "value.exists", new Object[]{sysUser.getUsername()}, "value.exists");
         }
+
+        Map<String,Object> data = Maps.newHashMap();
         if (bindingResult.hasErrors()) {
             success = false;
+            List<FieldError> feList = bindingResult.getFieldErrors();
+            for (FieldError fe: feList) {
+                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+            }
 
         }else{
             sysUserService.save(sysUser, currentUser);
         }
 
         body.put("success",success);
+        body.put("data",data);
         body.put("message",message);
 
         return ResponseEntity.ok(body);
@@ -98,19 +109,25 @@ public class SysUserController {
 
     @RequestMapping(value = "remove.json", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String,Object>> aremove(/*@Validated(value = {Remove.class}) */SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+    public ResponseEntity<Map<String,Object>> aremove(@Validated(value = {Remove.class})SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
         boolean success = true;
         String message = null;
         Map<String,Object> body = Maps.newHashMap();
 
+        Map<String,Object> data = Maps.newHashMap();
         if (bindingResult.hasErrors()) {
             success = false;
+            List<FieldError> feList = bindingResult.getFieldErrors();
+            for (FieldError fe: feList) {
+                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+            }
         }else{
             sysUserService.remove(sysUser, currentUser);
         }
 
         body.put("success",success);
+        body.put("data",data);
         body.put("message",message);
 
         return ResponseEntity.ok(body);
@@ -142,16 +159,14 @@ public class SysUserController {
         boolean success = true;
         String message = null;
         Map<String,Object> body = Maps.newHashMap();
+        Map<String,Object> data = Maps.newHashMap();
 
         if (bindingResult.hasErrors()) {
-            List<FieldError> fes = bindingResult.getFieldErrors();
-
-            for (FieldError fe: fes
-                 ) {
-                fe.getField();
-                fe.getRejectedValue();
-            }
             success = false;
+            List<FieldError> feList = bindingResult.getFieldErrors();
+            for (FieldError fe: feList) {
+                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+            }
         }else{
             sysUserService.update(sysUser, currentUser);
         }

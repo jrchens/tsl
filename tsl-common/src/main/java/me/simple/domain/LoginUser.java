@@ -3,7 +3,8 @@ package me.simple.domain;
 /**
  * Created by chensheng on 17/6/4.
  */
-public class LoginUser {
+public class LoginUser implements java.io.Serializable {
+    private static final long serialVersionUID = 273851448896084090L;
     private String username;
     private String password;
 
