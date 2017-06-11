@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -73,24 +72,24 @@ public class SysUserController {
         boolean success = true;
         String message = null;
         Map<String,Object> body = Maps.newHashMap();
-        if (sysUserService.getByUsername(sysUser.getUsername()) != null) {
-            bindingResult.rejectValue("username", "value.exists", new Object[]{sysUser.getUsername()}, "value.exists");
-        }
+//        if (sysUserService.getByUsername(sysUser.getUsername()) != null) {
+//            bindingResult.rejectValue("username", "value.exists", new Object[]{sysUser.getUsername()}, "value.exists");
+//        }
 
-        Map<String,Object> data = Maps.newHashMap();
+//        Map<String,Object> data = Maps.newHashMap();
         if (bindingResult.hasErrors()) {
             success = false;
-            List<FieldError> feList = bindingResult.getFieldErrors();
-            for (FieldError fe: feList) {
-                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
-            }
-
+//            List<FieldError> feList = bindingResult.getFieldErrors();
+//            for (FieldError fe: feList) {
+//                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+//            }
+            message = "valid.failed";
         }else{
             sysUserService.save(sysUser, currentUser);
         }
 
         body.put("success",success);
-        body.put("data",data);
+//        body.put("data",data);
         body.put("message",message);
 
         return ResponseEntity.ok(body);
@@ -112,23 +111,24 @@ public class SysUserController {
     public ResponseEntity<Map<String,Object>> aremove(@Validated(value = {Remove.class})SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
         boolean success = true;
-        String message = null;
+        String message = "remove.success";
         Map<String,Object> body = Maps.newHashMap();
 
-        Map<String,Object> data = Maps.newHashMap();
+//        Map<String,Object> data = Maps.newHashMap();
         if (bindingResult.hasErrors()) {
             success = false;
-            List<FieldError> feList = bindingResult.getFieldErrors();
-            for (FieldError fe: feList) {
-                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
-            }
+//            List<FieldError> feList = bindingResult.getFieldErrors();
+//            for (FieldError fe: feList) {
+//                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+//            }
+            message = "valid.failed";
         }else{
             sysUserService.remove(sysUser, currentUser);
         }
 
         body.put("success",success);
-        body.put("data",data);
-        body.put("message",message);
+//        body.put("data",data);
+        body.put("message",messageSource.getMessage(message,null,null));
 
         return ResponseEntity.ok(body);
     }
@@ -157,22 +157,24 @@ public class SysUserController {
     public ResponseEntity<Map<String,Object>> aupdate(@Validated(value = {Update.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
         boolean success = true;
-        String message = null;
+        String message = "update.success";
         Map<String,Object> body = Maps.newHashMap();
-        Map<String,Object> data = Maps.newHashMap();
+//        Map<String,Object> data = Maps.newHashMap();
 
         if (bindingResult.hasErrors()) {
             success = false;
-            List<FieldError> feList = bindingResult.getFieldErrors();
-            for (FieldError fe: feList) {
-                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
-            }
+//            List<FieldError> feList = bindingResult.getFieldErrors();
+//            for (FieldError fe: feList) {
+//                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+//            }
+            message = "valid.failed";
         }else{
             sysUserService.update(sysUser, currentUser);
         }
 
         body.put("success",success);
-        body.put("message",message);
+//        body.put("data",data);
+        body.put("message",messageSource.getMessage(message,null,null));
 
         return ResponseEntity.ok(body);
     }

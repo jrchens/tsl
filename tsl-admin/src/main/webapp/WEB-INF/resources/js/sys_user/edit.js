@@ -6,17 +6,15 @@ function sys_user_update() {
     var url = form.attr("action");
     form.form('submit',{
         url: url,
+        // onSubmit: function(param){
+        //     return true;
+        // },
         success: function (data) {
             data = jQuery.parseJSON(data);
             if(data.success){
                 tabRefresh("/sys_user/index");
             }else{
-                var errors = data.data;
-                var s = [];
-                for (var k in errors){
-                    s.push(k+" : "+errors[k]);
-                }
-                jQuery.messager.show({msg: s.join("<br>")});
+                jQuery.messager.show({msg: data.message});
             }
         }
     });
