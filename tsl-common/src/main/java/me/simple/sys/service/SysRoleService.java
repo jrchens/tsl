@@ -12,4 +12,6 @@ public interface SysRoleService {
     public int update(SysRole sysRole, CurrentUser currentUser);
     public SysRole get(SysRole sysRole, CurrentUser currentUser);
     public List<SysRole> query(SysRole sysRole, Pageable pageable, CurrentUser currentUser);
+
+    public SysRole getByRolename(String rolename);
 }

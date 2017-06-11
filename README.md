@@ -26,5 +26,22 @@ folder,article,attachment,feedback
 2. uuidgen | sed s/-//g
 ```
 ## exception
-@ControllerAdvice
-@ExceptionHandler
+```
+@ControllerAdvice   @ExceptionHandler
+Exception	HTTP Status Code
+TypeMismatchException	400 (Bad Request)
+BindException	400 (Bad Request)
+MethodArgumentNotValidException	400 (Bad Request)
+HttpMessageNotReadableException	400 (Bad Request)
+MissingServletRequestParameterException	400 (Bad Request)
+MissingServletRequestPartException	400 (Bad Request)
+NoSuchRequestHandlingMethodException	404 (Not Found)
+HttpRequestMethodNotSupportedException	405 (Method Not Allowed)
+HttpMediaTypeNotAcceptableException	406 (Not Acceptable)
+HttpMediaTypeNotSupportedException	415 (Unsupported Media Type)
+
+ConversionNotSupportedException	500 (Internal Server Error)
+HttpMessageNotWritableException	500 (Internal Server Error)
+
+DataAccessException,Exception
+```

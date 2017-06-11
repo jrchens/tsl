@@ -4,12 +4,14 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import me.simple.domain.CurrentUser;
 import me.simple.domain.Pageable;
+import me.simple.domain.SysGroup;
 import me.simple.domain.SysRole;
 import me.simple.sys.service.SysRoleService;
 import me.simple.util.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -108,5 +110,18 @@ public class SysRoleServiceImpl implements SysRoleService {
         SQLUtil.sortingAndPaging(buffer,pageable);
 
         return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<SysRole>(SysRole.class));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SysRole getByRolename(String rolename) {
+        try {
+            SysRole sysRole = new SysRole();
+            sysRole.setRolename(rolename);
+            return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName, "rolename",false), new BeanPropertySqlParameterSource(sysRole), new BeanPropertyRowMapper<SysRole>(SysRole.class));
+        } catch (DataAccessException e) {
+            // rolename not exists
+            return null;
+        }
     }
 }

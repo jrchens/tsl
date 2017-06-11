@@ -2,27 +2,32 @@
  * Created by chensheng on 17/5/28.
  */
 jQuery.fn.datagrid.defaults.method = "GET";
-/*
-jQuery.extend(jQuery.fn.validatebox.defaults.rules, {
-    unique: {
-        validator: function(value, param){
-            var valid = false;
-            var data = {};
-            data[param[1]] = value;
-            jQuery.ajax({
-                url: param[0],
-                data: data,
-                type: "get",
-                dataType: "json",
-                async: false,
-                cache:false,
-                success: function(data,status,xhr){
-                    valid = data;
-                }
-            });
-            return valid;
-        },
-        message: 'value exists'
+
+jQuery.extend(jQuery.fn.validatebox.defaults.rules,
+    {
+        remote: {
+            validator: function (value, param) {
+                var opts = jQuery(this).validatebox('options');
+                var data = {};
+                data[param[1]] = value;
+                var success = false;
+                var message = false;
+                jQuery.ajax({
+                    dataType: "json",
+                    url: param[0],
+                    data: data,
+                    async: false,
+                    cache: false,
+                    type: "get",
+                    success: function (data, status, xhr) {
+                        success = data.success;
+                        if (success == false) {
+                            opts.rules['remote']['message'] = data.message;
+                        }
+                    }
+                });
+                return success;
+            }, message: "Please fix this field."
+        }
     }
-});
-*/
+);

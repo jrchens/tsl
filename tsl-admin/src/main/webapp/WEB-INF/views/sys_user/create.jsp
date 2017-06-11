@@ -22,7 +22,11 @@
 
     <form:form id="sys_user_create_form" method="post" servletRelativeAction="/sys_user/save.json" commandName="sysUser">
         <div style="margin-bottom:20px">
-            <form:input path="username" cssClass="easyui-textbox"  data-options="label:'username:',required:true" cssStyle="width: 100%;"/>
+            <form:input path="username" cssClass="easyui-textbox"  data-options="label:'username:',required:true,
+            validType:{
+                length:[4,32],
+                remote:['/valid.json?code=100','username']
+                }" cssStyle="width: 100%;"/>
             <form:errors path="username" />
         </div>
         <div style="margin-bottom:20px">
