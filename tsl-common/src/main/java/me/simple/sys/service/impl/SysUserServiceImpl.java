@@ -2,9 +2,9 @@ package me.simple.sys.service.impl;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import me.simple.domain.CurrentUser;
-import me.simple.domain.Pageable;
-import me.simple.domain.SysUser;
+import me.simple.domain.*;
+import me.simple.sys.service.SysGroupService;
+import me.simple.sys.service.SysRoleService;
 import me.simple.sys.service.SysUserService;
 import me.simple.util.SQLUtil;
 import org.slf4j.Logger;
@@ -31,15 +31,21 @@ public class SysUserServiceImpl implements SysUserService {
     private static final Logger logger = LoggerFactory.getLogger(SysUserService.class);
     public static final String tableName = "sys_user";
     private static final String generatedKeyName = "id";
-    private static final List<String> insertColumns = Lists.newArrayList("username","viewname","password","cruser","crtime");
-    private static final List<String> updateColumns = Lists.newArrayList("viewname","password","mduser","mdtime");
+    private static final List<String> insertColumns = Lists.newArrayList("username", "viewname", "gid","rid", "password", "cruser", "crtime");
+    private static final List<String> updateColumns = Lists.newArrayList("viewname", "password", "gid","rid", "mduser", "mdtime");
 
     private SimpleJdbcInsert simpleJdbcInsert;
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    public void setDataSource(DataSource dataSource){
+    private SysGroupService sysGroupService;
+    @Autowired
+    private SysRoleService sysRoleService;
+
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource);
         this.simpleJdbcInsert.setTableName(tableName);
         this.simpleJdbcInsert.setGeneratedKeyName(generatedKeyName);
@@ -57,7 +63,9 @@ public class SysUserServiceImpl implements SysUserService {
 
         sysUser.setCruser(user);
         sysUser.setCrtime(time);
-        return simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(sysUser)).intValue();
+        int id = simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(sysUser)).intValue();
+
+        return id;
     }
 
     @Override
@@ -71,9 +79,9 @@ public class SysUserServiceImpl implements SysUserService {
 
         String ids = sysUser.getIds();
         List<String> idlist = Splitter.on(",").splitToList(ids);
-        for (String id :idlist) {
+        for (String id : idlist) {
             sysUser.setId(Integer.parseInt(id));
-            aff += namedParameterJdbcTemplate.update(SQLUtil.generateRemoveSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(sysUser));
+            aff += namedParameterJdbcTemplate.update(SQLUtil.generateRemoveSql(tableName, generatedKeyName), new BeanPropertySqlParameterSource(sysUser));
         }
         return aff;
     }
@@ -88,19 +96,27 @@ public class SysUserServiceImpl implements SysUserService {
 
         // password empty process
         String password = sysUser.getPassword();
-        if(!StringUtils.hasText(password)){
-            SysUser clone = get(sysUser,currentUser);
+        if (!StringUtils.hasText(password)) {
+            SysUser clone = get(sysUser, currentUser);
             sysUser.setPassword(clone.getPassword());
         }
 
 
-        return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName,updateColumns,generatedKeyName),new BeanPropertySqlParameterSource(sysUser));
+        return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName, updateColumns, generatedKeyName), new BeanPropertySqlParameterSource(sysUser));
     }
 
     @Override
     @Transactional(readOnly = true)
     public SysUser get(SysUser sysUser, CurrentUser currentUser) {
-        return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(sysUser),new BeanPropertyRowMapper<SysUser>(SysUser.class));
+        SysUser user = namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName, generatedKeyName), new BeanPropertySqlParameterSource(sysUser), new BeanPropertyRowMapper<SysUser>(SysUser.class));
+
+        SysGroup group = sysGroupService.get(new SysGroup(user.getGid()), currentUser);
+        user.setGroup(group);
+
+        SysRole role = sysRoleService.get(new SysRole(user.getRid()), currentUser);
+        user.setRole(role);
+
+        return user;
     }
 
     @Override
@@ -114,21 +130,30 @@ public class SysUserServiceImpl implements SysUserService {
         buffer.append("SELECT * FROM ").append(tableName).append(" ");
         buffer.append("WHERE deleted = 0 ");
 
-        if(StringUtils.hasText(viewname)) {
+        if (StringUtils.hasText(viewname)) {
             buffer.append("AND viewname LIKE ? ");
             args.add(SQLUtil.like(viewname));
         }
-        if(StringUtils.hasText(username)) {
+        if (StringUtils.hasText(username)) {
             buffer.append("AND username LIKE ? ");
             args.add(SQLUtil.like(username));
         }
 
-        int total = jdbcTemplate.queryForObject(SQLUtil.generateCountSQL(buffer.toString()),args.toArray(),Integer.class);
+        int total = jdbcTemplate.queryForObject(SQLUtil.generateCountSQL(buffer.toString()), args.toArray(), Integer.class);
         pageable.setTotal(total);
 
-        SQLUtil.sortingAndPaging(buffer,pageable);
+        SQLUtil.sortingAndPaging(buffer, pageable);
 
-        return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<SysUser>(SysUser.class));
+        List<SysUser> users = jdbcTemplate.query(buffer.toString(), args.toArray(), new BeanPropertyRowMapper<SysUser>(SysUser.class));
+        for (SysUser user : users
+                ) {
+            SysGroup group = sysGroupService.get(new SysGroup(user.getGid()), currentUser);
+            user.setGroup(group);
+
+            SysRole role = sysRoleService.get(new SysRole(user.getRid()), currentUser);
+            user.setRole(role);
+        }
+        return users;
     }
 
     @Override

@@ -3,11 +3,12 @@ package me.simple.domain;
 import me.simple.validator.group.Remove;
 import org.hibernate.validator.constraints.Length;
 
-public class SysRole implements java.io.Serializable {
+public class SysUserGroup implements java.io.Serializable {
 
 private int id;
-private String rolename;
-private String viewname;
+private int uid;
+private int gid;
+private int srt;
 private boolean deleted;
 private boolean disabled;
 private String cruser;
@@ -15,14 +16,7 @@ private java.sql.Timestamp crtime;
 private String mduser;
 private java.sql.Timestamp mdtime;
 
-  public SysRole() {
-  }
-
-  public SysRole(int id) {
-    this.id = id;
-  }
-
-  // ============================================================
+// ============================================================
 @Length(min = 1,max = 200,groups = {Remove.class})
 private String ids;
 // ============================================================
@@ -33,17 +27,23 @@ public int getId(){
 public void setId(int id){
   this.id = id;
 }
-public String getRolename(){
-  return rolename;
+public int getUid(){
+  return uid;
 }
-public void setRolename(String rolename){
-  this.rolename = rolename;
+public void setUid(int uid){
+  this.uid = uid;
 }
-public String getViewname(){
-  return viewname;
+public int getGid(){
+  return gid;
 }
-public void setViewname(String viewname){
-  this.viewname = viewname;
+public void setGid(int gid){
+  this.gid = gid;
+}
+public int getSrt(){
+  return srt;
+}
+public void setSrt(int srt){
+  this.srt = srt;
 }
 public boolean getDeleted(){
   return deleted;

@@ -12,6 +12,7 @@ public interface SysGroupService {
     public int update(SysGroup sysGroup, CurrentUser currentUser);
     public SysGroup get(SysGroup sysGroup, CurrentUser currentUser);
     public List<SysGroup> query(SysGroup sysGroup, Pageable pageable, CurrentUser currentUser);
+    public List<SysGroup> queryAll(boolean filterDisabled);
 
 
     public SysGroup getByGroupname(String groupname);

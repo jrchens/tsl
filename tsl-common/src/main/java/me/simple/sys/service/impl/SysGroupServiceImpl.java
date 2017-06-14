@@ -111,6 +111,24 @@ public class SysGroupServiceImpl implements SysGroupService {
         return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<SysGroup>(SysGroup.class));
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<SysGroup> queryAll(boolean filterDisabled) {
+
+        List<Object> args = Lists.newArrayList();
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("SELECT * FROM ").append(tableName).append(" ");
+        buffer.append("WHERE deleted = 0 ");
+
+        if(filterDisabled){
+            buffer.append("AND disabled = ? ");
+            args.add(!filterDisabled);
+        }
+
+        return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<SysGroup>(SysGroup.class));
+
+    }
+
 
     @Override
     @Transactional(readOnly = true)

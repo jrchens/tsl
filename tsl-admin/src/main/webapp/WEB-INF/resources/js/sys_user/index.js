@@ -8,7 +8,7 @@ jQuery(function () {
         dg.datagrid({
             url : "/sys_user/query",
             pagination : true,
-            cls : "datagrid-float",
+            cls : "clear-fix",
             width : 420,
             // singleSelect : true,
             toolbar : [{
@@ -72,7 +72,13 @@ jQuery(function () {
             columns : [[
                 {field: "id",checkbox:true},
                 {field: "username",title: "用户名"},
-                {field: "viewname",title: "显示名"}
+                {field: "viewname",title: "显示名"},
+                {field: "gid",title: "用户组",formatter:function (value,row,index) {
+                    return row.group.viewname;
+                }},
+                {field: "rid",title: "角色",formatter:function (value,row,index) {
+                    return row.role.viewname
+                }},
             ]]
         });
     }

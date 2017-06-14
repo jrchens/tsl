@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class SysUser implements java.io.Serializable {
     @Range(min=1,max=Integer.MAX_VALUE,groups = {Edit.class, Update.class})
@@ -33,6 +34,13 @@ public class SysUser implements java.io.Serializable {
     // ============================================
     @Length(min = 1,max = 200,groups = {Remove.class})
     private String ids;
+
+    private int gid; // group id
+    private SysGroup group;
+    private List<SysGroup> groups;
+    private int rid; // role id
+    private SysRole role;
+    private List<SysRole> roles;
     // ============================================
 
     public int getId() {
@@ -121,5 +129,53 @@ public class SysUser implements java.io.Serializable {
 
     public void setIds(String ids) {
         this.ids = ids;
+    }
+
+    public int getGid() {
+        return gid;
+    }
+
+    public void setGid(int gid) {
+        this.gid = gid;
+    }
+
+    public SysGroup getGroup() {
+        return group;
+    }
+
+    public void setGroup(SysGroup group) {
+        this.group = group;
+    }
+
+    public List<SysGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<SysGroup> groups) {
+        this.groups = groups;
+    }
+
+    public int getRid() {
+        return rid;
+    }
+
+    public void setRid(int rid) {
+        this.rid = rid;
+    }
+
+    public SysRole getRole() {
+        return role;
+    }
+
+    public void setRole(SysRole role) {
+        this.role = role;
+    }
+
+    public List<SysRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<SysRole> roles) {
+        this.roles = roles;
     }
 }

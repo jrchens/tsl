@@ -42,7 +42,7 @@ CREATE TABLE `sys_group` (
   `mdtime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNI_89D9D3B1365F41309CBF7D7D5291079F` (`groupname`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -54,8 +54,8 @@ DROP TABLE IF EXISTS `sys_group_role`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_group_role` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) unsigned NOT NULL,
-  `role_id` int(11) unsigned NOT NULL,
+  `gid` int(11) unsigned NOT NULL,
+  `rid` int(11) unsigned NOT NULL,
   `srt` int(11) unsigned NOT NULL DEFAULT '1',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
@@ -86,7 +86,7 @@ CREATE TABLE `sys_menu` (
   `mduser` varchar(32) DEFAULT NULL,
   `mdtime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +132,7 @@ CREATE TABLE `sys_role` (
   `mdtime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNI_7FCFF4C348704ED5A56E71273963D7C8` (`rolename`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,8 +144,8 @@ DROP TABLE IF EXISTS `sys_role_menu`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_role_menu` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `role_id` int(11) unsigned NOT NULL,
-  `menu_id` int(11) unsigned NOT NULL,
+  `rid` int(11) unsigned NOT NULL,
+  `mid` int(11) unsigned NOT NULL,
   `srt` int(11) unsigned NOT NULL DEFAULT '1',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
@@ -166,8 +166,8 @@ DROP TABLE IF EXISTS `sys_role_perm`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_role_perm` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `role_id` int(11) unsigned NOT NULL,
-  `perm_id` int(11) unsigned NOT NULL,
+  `rid` int(11) unsigned NOT NULL,
+  `pid` int(11) unsigned NOT NULL,
   `permcode` varchar(100) NOT NULL DEFAULT '',
   `srt` int(11) unsigned NOT NULL DEFAULT '1',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
@@ -177,6 +177,22 @@ CREATE TABLE `sys_role_perm` (
   `mduser` varchar(32) DEFAULT NULL,
   `mdtime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `sys_sequence`
+--
+
+DROP TABLE IF EXISTS `sys_sequence`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sys_sequence` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `seq_code` varchar(64) NOT NULL DEFAULT '',
+  `seq_value` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNI_2FBCDCBADFB64C69882EB35FBBB0D8B8` (`seq_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -192,6 +208,8 @@ CREATE TABLE `sys_user` (
   `username` varchar(32) NOT NULL DEFAULT '',
   `viewname` varchar(32) NOT NULL DEFAULT '',
   `password` varchar(128) NOT NULL,
+  `rid` int(11) unsigned NOT NULL DEFAULT '0',
+  `gid` int(11) unsigned NOT NULL DEFAULT '0',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
   `cruser` varchar(32) DEFAULT '',
@@ -200,7 +218,7 @@ CREATE TABLE `sys_user` (
   `mdtime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNI_D54CF0B7DA934879BB35AC93FF29772C` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -212,8 +230,8 @@ DROP TABLE IF EXISTS `sys_user_group`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_user_group` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) unsigned NOT NULL,
-  `group_id` int(11) unsigned NOT NULL,
+  `uid` int(11) unsigned NOT NULL,
+  `gid` int(11) unsigned NOT NULL,
   `srt` int(11) unsigned NOT NULL DEFAULT '1',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
@@ -234,8 +252,8 @@ DROP TABLE IF EXISTS `sys_user_role`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sys_user_role` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) unsigned NOT NULL,
-  `role_id` int(11) unsigned NOT NULL,
+  `uid` int(11) unsigned NOT NULL,
+  `rid` int(11) unsigned NOT NULL,
   `srt` int(11) unsigned NOT NULL DEFAULT '1',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
@@ -256,8 +274,10 @@ DROP TABLE IF EXISTS `table_template`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `table_template` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `owner` varchar(32) NOT NULL DEFAULT '',
+  `rstatus` int(4) NOT NULL DEFAULT '0',
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `cruser` varchar(32) NOT NULL DEFAULT '',
   `crtime` datetime NOT NULL,
   `mduser` varchar(32) DEFAULT NULL,
@@ -283,4 +303,4 @@ CREATE TABLE `table_template` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-06-04 21:28:09
+-- Dump completed on 2017-06-14 23:29:54

@@ -19,10 +19,17 @@ public class SysGroup implements java.io.Serializable {
     private String mduser;
     private Timestamp mdtime;
 
+    public SysGroup() {
+    }
+
+    public SysGroup(int id) {
+        this.id = id;
+    }
+
     // ============================================
     @Length(min = 1,max = 200,groups = {Remove.class})
     private String ids;
-
+    private boolean checked;
     // ============================================
     public int getId() {
         return id;
@@ -102,5 +109,13 @@ public class SysGroup implements java.io.Serializable {
 
     public void setMdtime(Timestamp mdtime) {
         this.mdtime = mdtime;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 }

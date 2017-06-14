@@ -1,9 +1,10 @@
 package me.simple.sys.controller;
 
 import com.google.common.collect.Maps;
-import me.simple.domain.CurrentUser;
-import me.simple.domain.Pageable;
-import me.simple.domain.SysUser;
+import me.simple.domain.*;
+import me.simple.sys.service.SysGroupService;
+import me.simple.sys.service.SysRoleService;
+import me.simple.sys.service.SysUserGroupService;
 import me.simple.sys.service.SysUserService;
 import me.simple.validator.group.*;
 import me.simple.web.method.support.LoginedUser;
@@ -33,6 +34,12 @@ public class SysUserController {
 
     @Autowired
     private SysUserService sysUserService;
+    @Autowired
+    private SysGroupService sysGroupService;
+    @Autowired
+    private SysRoleService sysRoleService;
+    @Autowired
+    private SysUserGroupService sysUserGroupService;
 
     @Autowired
     private MessageSource messageSource;
@@ -48,6 +55,8 @@ public class SysUserController {
     public String create(@Validated(value = {Create.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
         model.addAttribute(sysUser);
+        model.addAttribute(sysGroupService.queryAll(true));
+        model.addAttribute(sysRoleService.queryAll(true));
         return "sys_user/create";
     }
 
@@ -138,9 +147,33 @@ public class SysUserController {
         if (bindingResult.hasErrors()) {
             return "sys_user/index";
         }
+
         model.addAttribute(sysUserService.get(sysUser, currentUser));
+
+        List<SysGroup> sysGroupList = sysGroupService.queryAll(true);
+        List<SysUserGroup> sysUserGroupList = sysUserGroupService.queryByUid(sysUser.getId(),true);
+
+        for (SysGroup sysGroup: sysGroupList
+             ) {
+            for (SysUserGroup sysUserGroup: sysUserGroupList
+                 ) {
+                if(sysGroup.getId() == sysUserGroup.getGid()){
+                    sysGroup.setChecked(true);
+                    break;
+                }
+            }
+        }
+
+        model.addAttribute(sysGroupList);
+
+
+        List<SysRole> sysRoleList = sysRoleService.queryAll(true);
+        model.addAttribute(sysRoleList);
+
         return "sys_user/edit";
     }
+
+
 
 //    @RequestMapping(value = "update", method = RequestMethod.POST)
 //    public String update(@Validated(value = {Update.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {

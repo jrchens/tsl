@@ -8,7 +8,7 @@ jQuery(function () {
         dg.datagrid({
             url : "/sys_role/query.json",
             pagination : true,
-            cls : "datagrid-float",
+            cls : "clear-fix",
             width : 420,
             // singleSelect : true,
             toolbar : [{

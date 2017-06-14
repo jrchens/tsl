@@ -4,14 +4,12 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import me.simple.domain.CurrentUser;
 import me.simple.domain.Pageable;
-import me.simple.domain.SysGroup;
-import me.simple.domain.SysRole;
-import me.simple.sys.service.SysRoleService;
+import me.simple.domain.SysUserGroup;
+import me.simple.sys.service.SysUserGroupService;
 import me.simple.util.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -27,13 +25,13 @@ import java.util.List;
 
 @Service
 @Transactional
-public class SysRoleServiceImpl implements SysRoleService {
+public class SysUserGroupServiceImpl implements SysUserGroupService {
 
-    private static final Logger logger = LoggerFactory.getLogger(SysRoleService.class);
-    public static final String tableName = "sys_role";
+    private static final Logger logger = LoggerFactory.getLogger(SysUserGroupService.class);
+    public static final String tableName = "sys_user_group";
     private static final String generatedKeyName = "id";
-    private static final List<String> insertColumns = Lists.newArrayList("rolename","viewname","disabled","deleted","cruser","crtime");
-    private static final List<String> updateColumns = Lists.newArrayList("viewname","mduser","mdtime");
+    private static final List<String> insertColumns = Lists.newArrayList("uid","gid","srt","cruser","crtime");
+    private static final List<String> updateColumns = Lists.newArrayList("srt","mduser","mdtime");
 
     private SimpleJdbcInsert simpleJdbcInsert;
     private JdbcTemplate jdbcTemplate;
@@ -52,53 +50,53 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public int save(SysRole sysRole , CurrentUser currentUser) {
+    public int save(SysUserGroup sysUserGroup , CurrentUser currentUser) {
         String user = currentUser.getUsername();
         Timestamp time = new Timestamp(System.currentTimeMillis());
 
-        sysRole.setCruser(user);
-        sysRole.setCrtime(time);
-        return simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(sysRole)).intValue();
+        sysUserGroup.setCruser(user);
+        sysUserGroup.setCrtime(time);
+        return simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(sysUserGroup)).intValue();
     }
 
     @Override
-    public int remove(SysRole sysRole , CurrentUser currentUser) {
+    public int remove(SysUserGroup sysUserGroup , CurrentUser currentUser) {
         String user = currentUser.getUsername();
         Timestamp time = new Timestamp(System.currentTimeMillis());
 
-        sysRole.setMduser(user);
-        sysRole.setMdtime(time);
+        sysUserGroup.setMduser(user);
+        sysUserGroup.setMdtime(time);
 
         int aff = 0;
-        String ids = sysRole.getIds();
+        String ids = sysUserGroup.getIds();
         List<String> idlist = Splitter.on(",").splitToList(ids);
             for (String id :idlist) {
-            sysRole.setId(Integer.parseInt(id));
-            aff += namedParameterJdbcTemplate.update(SQLUtil.generateRemoveSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(sysRole));
+            sysUserGroup.setId(Integer.parseInt(id));
+            aff += namedParameterJdbcTemplate.update(SQLUtil.generateRemoveSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(sysUserGroup));
         }
 
         return aff;
     }
 
     @Override
-    public int update(SysRole sysRole , CurrentUser currentUser) {
+    public int update(SysUserGroup sysUserGroup , CurrentUser currentUser) {
         String user = currentUser.getUsername();
         Timestamp time = new Timestamp(System.currentTimeMillis());
 
-        sysRole.setMduser(user);
-        sysRole.setMdtime(time);
-        return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName,updateColumns,generatedKeyName),new BeanPropertySqlParameterSource(sysRole));
+        sysUserGroup.setMduser(user);
+        sysUserGroup.setMdtime(time);
+        return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName,updateColumns,generatedKeyName),new BeanPropertySqlParameterSource(sysUserGroup));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public SysRole get(SysRole sysRole , CurrentUser currentUser) {
-        return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(sysRole),new BeanPropertyRowMapper<SysRole>(SysRole.class));
+    public SysUserGroup get(SysUserGroup sysUserGroup , CurrentUser currentUser) {
+        return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName,generatedKeyName),new BeanPropertySqlParameterSource(sysUserGroup),new BeanPropertyRowMapper<SysUserGroup>(SysUserGroup.class));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<SysRole> query(SysRole sysRole , Pageable pageable, CurrentUser currentUser) {
+    public List<SysUserGroup> query(SysUserGroup sysUserGroup , Pageable pageable, CurrentUser currentUser) {
         List<Object> args = Lists.newArrayList();
         StringBuffer buffer = new StringBuffer();
         buffer.append("SELECT * FROM ").append(tableName).append(" ");
@@ -109,34 +107,46 @@ public class SysRoleServiceImpl implements SysRoleService {
 
         SQLUtil.sortingAndPaging(buffer,pageable);
 
-        return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<SysRole>(SysRole.class));
+        return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<SysUserGroup>(SysUserGroup.class));
     }
+
 
     @Override
     @Transactional(readOnly = true)
-    public SysRole getByRolename(String rolename) {
-        try {
-            SysRole sysRole = new SysRole();
-            sysRole.setRolename(rolename);
-            return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName, "rolename",false), new BeanPropertySqlParameterSource(sysRole), new BeanPropertyRowMapper<SysRole>(SysRole.class));
-        } catch (DataAccessException e) {
-            // rolename not exists
-            return null;
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<SysRole> queryAll(boolean filterDisabled) {
+    public List<SysUserGroup> queryByUid(int uid,boolean filterDisabled) {
         List<Object> args = Lists.newArrayList();
         StringBuffer buffer = new StringBuffer();
         buffer.append("SELECT * FROM ").append(tableName).append(" ");
         buffer.append("WHERE deleted = 0 ");
+
         if (filterDisabled) {
             buffer.append("AND disabled = ? ");
             args.add(!filterDisabled);
         }
 
-        return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<SysRole>(SysRole.class));
+        buffer.append("AND uid = ? ORDER BY srt ASC ");
+        args.add(uid);
+
+        return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<SysUserGroup>(SysUserGroup.class));
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SysUserGroup> queryByGid(int gid,boolean filterDisabled) {
+        List<Object> args = Lists.newArrayList();
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("SELECT * FROM ").append(tableName).append(" ");
+        buffer.append("WHERE deleted = 0 ");
+
+        if (filterDisabled) {
+            buffer.append("AND disabled = ? ");
+            args.add(!filterDisabled);
+        }
+
+        buffer.append("AND gid = ? ORDER BY srt ASC ");
+        args.add(gid);
+
+        return jdbcTemplate.query(buffer.toString(),args.toArray(),new BeanPropertyRowMapper<SysUserGroup>(SysUserGroup.class));
     }
 }

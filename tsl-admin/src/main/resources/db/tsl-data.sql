@@ -29,6 +29,7 @@ USE `tsl`;
 
 LOCK TABLES `sys_group` WRITE;
 /*!40000 ALTER TABLE `sys_group` DISABLE KEYS */;
+INSERT INTO `sys_group` VALUES (1,'GROUP_ADMIN','Administrator',0,0,'admin','2017-06-07 22:24:40','admin',NULL),(101,'GROUP_USER','User',0,0,'admin','2017-06-07 22:24:40','',NULL);
 /*!40000 ALTER TABLE `sys_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -47,6 +48,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `sys_menu` WRITE;
 /*!40000 ALTER TABLE `sys_menu` DISABLE KEYS */;
+INSERT INTO `sys_menu` VALUES (1,0,'User Manager','/sys_user/index',0,0,'admin','2015-12-12 12:12:12',NULL,NULL),(2,0,'Role Manager','/sys_role/index',0,0,'admin','2015-12-12 12:12:12',NULL,NULL),(3,0,'Group Manager','/sys_group/index',0,0,'admin','2015-12-12 12:12:12',NULL,NULL);
 /*!40000 ALTER TABLE `sys_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,6 +67,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `sys_role` WRITE;
 /*!40000 ALTER TABLE `sys_role` DISABLE KEYS */;
+INSERT INTO `sys_role` VALUES (1,'ROLE_ADMIN','Adminstrator',0,0,'admin','2017-06-08 23:44:35','',NULL),(101,'ROLE_USER','User',0,0,'admin','2017-06-08 23:44:45','admin','2017-06-08 23:46:43');
 /*!40000 ALTER TABLE `sys_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,12 +90,21 @@ LOCK TABLES `sys_role_perm` WRITE;
 UNLOCK TABLES;
 
 --
+-- Dumping data for table `sys_sequence`
+--
+
+LOCK TABLES `sys_sequence` WRITE;
+/*!40000 ALTER TABLE `sys_sequence` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sys_sequence` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping data for table `sys_user`
 --
 
 LOCK TABLES `sys_user` WRITE;
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-INSERT INTO `sys_user` VALUES (1,'admin','管理员','123456',0,0,'admin','2011-06-22 22:27:10','admin','2017-06-04 12:52:41');
+INSERT INTO `sys_user` VALUES (1,'admin','admin','123456',1,1,0,0,'admin','2011-06-22 22:27:10','admin','2017-06-14 23:16:31'),(101,'alien','alien','123456',101,101,0,0,'admin','2017-06-07 21:15:42','admin','2017-06-14 23:16:19'),(102,'thomas','Thomas','123456',101,101,0,0,'admin','2017-06-14 21:24:32','',NULL);
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -132,4 +144,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-06-04 21:28:09
+-- Dump completed on 2017-06-14 23:29:54
