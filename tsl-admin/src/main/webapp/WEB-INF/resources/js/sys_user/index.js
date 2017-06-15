@@ -76,9 +76,9 @@ jQuery(function () {
                 {field: "gid",title: "用户组",formatter:function (value,row,index) {
                     return row.group.viewname;
                 }},
-                {field: "rid",title: "角色",formatter:function (value,row,index) {
+                /*{field: "rid",title: "角色",formatter:function (value,row,index) {
                     return row.role.viewname
-                }},
+                }},*/
             ]]
         });
     }

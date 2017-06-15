@@ -55,8 +55,8 @@ public class SysUserController {
     public String create(@Validated(value = {Create.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
         model.addAttribute(sysUser);
-        model.addAttribute(sysGroupService.queryAll(true));
-        model.addAttribute(sysRoleService.queryAll(true));
+        model.addAttribute(sysGroupService.queryAll());
+//        model.addAttribute(sysRoleService.queryAll());
         return "sys_user/create";
     }
 
@@ -150,25 +150,12 @@ public class SysUserController {
 
         model.addAttribute(sysUserService.get(sysUser, currentUser));
 
-        List<SysGroup> sysGroupList = sysGroupService.queryAll(true);
-        List<SysUserGroup> sysUserGroupList = sysUserGroupService.queryByUid(sysUser.getId(),true);
-
-        for (SysGroup sysGroup: sysGroupList
-             ) {
-            for (SysUserGroup sysUserGroup: sysUserGroupList
-                 ) {
-                if(sysGroup.getId() == sysUserGroup.getGid()){
-                    sysGroup.setChecked(true);
-                    break;
-                }
-            }
-        }
-
+        List<SysGroup> sysGroupList = sysGroupService.queryAll();
         model.addAttribute(sysGroupList);
 
 
-        List<SysRole> sysRoleList = sysRoleService.queryAll(true);
-        model.addAttribute(sysRoleList);
+//        List<SysRole> sysRoleList = sysRoleService.queryAll();
+//        model.addAttribute(sysRoleList);
 
         return "sys_user/edit";
     }

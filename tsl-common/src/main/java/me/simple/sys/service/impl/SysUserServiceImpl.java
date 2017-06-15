@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import me.simple.domain.*;
 import me.simple.sys.service.SysGroupService;
 import me.simple.sys.service.SysRoleService;
+import me.simple.sys.service.SysUserGroupService;
 import me.simple.sys.service.SysUserService;
 import me.simple.util.SQLUtil;
 import org.slf4j.Logger;
@@ -31,17 +32,17 @@ public class SysUserServiceImpl implements SysUserService {
     private static final Logger logger = LoggerFactory.getLogger(SysUserService.class);
     public static final String tableName = "sys_user";
     private static final String generatedKeyName = "id";
-    private static final List<String> insertColumns = Lists.newArrayList("username", "viewname", "gid","rid", "password", "cruser", "crtime");
-    private static final List<String> updateColumns = Lists.newArrayList("viewname", "password", "gid","rid", "mduser", "mdtime");
+    private static final List<String> insertColumns = Lists.newArrayList("gid","rid","username", "viewname", "password", "cruser", "crtime");
+    private static final List<String> updateColumns = Lists.newArrayList("gid","rid","viewname", "password", "mduser", "mdtime");
 
     private SimpleJdbcInsert simpleJdbcInsert;
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    private SysGroupService sysGroupService;
+    private SysUserGroupService sysUserGroupService;
     @Autowired
-    private SysRoleService sysRoleService;
+    private SysGroupService sysGroupService;
 
 
     @Autowired
@@ -64,6 +65,8 @@ public class SysUserServiceImpl implements SysUserService {
         sysUser.setCruser(user);
         sysUser.setCrtime(time);
         int id = simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(sysUser)).intValue();
+
+        // sysUserGroupService.save(new SysUserGroup(id,sysUser.getGid(),1),currentUser);
 
         return id;
     }
@@ -101,6 +104,10 @@ public class SysUserServiceImpl implements SysUserService {
             sysUser.setPassword(clone.getPassword());
         }
 
+        int uid = sysUser.getId();
+        int gid = sysUser.getGid();
+        // remove the sys_user_group (uid = ${uid} AND gid = ${gid})
+        sysUserGroupService.removeByUidAndGid(uid,gid,currentUser);
 
         return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName, updateColumns, generatedKeyName), new BeanPropertySqlParameterSource(sysUser));
     }
@@ -109,13 +116,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Transactional(readOnly = true)
     public SysUser get(SysUser sysUser, CurrentUser currentUser) {
         SysUser user = namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName, generatedKeyName), new BeanPropertySqlParameterSource(sysUser), new BeanPropertyRowMapper<SysUser>(SysUser.class));
-
-        SysGroup group = sysGroupService.get(new SysGroup(user.getGid()), currentUser);
-        user.setGroup(group);
-
-        SysRole role = sysRoleService.get(new SysRole(user.getRid()), currentUser);
-        user.setRole(role);
-
+        user.setGroup(sysGroupService.getById(user.getGid()));
         return user;
     }
 
@@ -147,11 +148,7 @@ public class SysUserServiceImpl implements SysUserService {
         List<SysUser> users = jdbcTemplate.query(buffer.toString(), args.toArray(), new BeanPropertyRowMapper<SysUser>(SysUser.class));
         for (SysUser user : users
                 ) {
-            SysGroup group = sysGroupService.get(new SysGroup(user.getGid()), currentUser);
-            user.setGroup(group);
-
-            SysRole role = sysRoleService.get(new SysRole(user.getRid()), currentUser);
-            user.setRole(role);
+            user.setGroup(sysGroupService.getById(user.getGid()));
         }
         return users;
     }

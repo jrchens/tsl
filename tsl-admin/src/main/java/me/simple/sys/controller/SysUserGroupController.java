@@ -105,7 +105,7 @@ public class SysUserGroupController {
 
     @RequestMapping(value = "remove.json", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String,Object>> aremove(/*@Validated(value = {Remove.class}) */SysUserGroup sysUserGroup, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
+    public ResponseEntity<Map<String,Object>> aremove(@Validated(value = {Remove.class}) SysUserGroup sysUserGroup, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
     
         boolean success = true;
         String message = null;
@@ -175,7 +175,7 @@ public class SysUserGroupController {
         body.put("success",success);
         body.put("data",data);
         body.put("message",message);
-    
+
         return ResponseEntity.ok(body);
     }
 
@@ -204,8 +204,8 @@ public class SysUserGroupController {
             Pageable pageable,
             @LoginedUser CurrentUser currentUser, Model model) {
 
-        List<SysGroup> sysGroupList = sysGroupService.queryAll(true);
-        List<SysUserGroup> sysUserGroupList = sysUserGroupService.queryByUid(sysUserGroup.getUid(),true);
+        List<SysGroup> sysGroupList = sysGroupService.queryAll();
+        List<SysUserGroup> sysUserGroupList = sysUserGroupService.queryByUid(sysUserGroup.getUid());
 
         List<SysGroup> rows = Lists.newArrayList();
         for (SysGroup sysGroup: sysGroupList
@@ -217,14 +217,12 @@ public class SysUserGroupController {
                     ) {
                 if(sysGroup.getId() == userGroup.getGid()){
                     sysGroup.setChecked(true);
+                    sysGroup.setIds(String.valueOf(userGroup.getId()));
                     break;
                 }
             }
             rows.add(sysGroup);
         }
-
-        model.addAttribute(sysGroupList);
-
 
         Map<String, Object> body = Maps.newHashMap();
         body.put("rows", rows);

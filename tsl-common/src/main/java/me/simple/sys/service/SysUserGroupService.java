@@ -14,6 +14,9 @@ public interface SysUserGroupService {
     public List<SysUserGroup> query(SysUserGroup sysUserGroup, Pageable pageable, CurrentUser currentUser);
 
 
-    public List<SysUserGroup> queryByUid(int uid,boolean filterDisabled);
-    public List<SysUserGroup> queryByGid(int gid,boolean filterDisabled);
+    public List<SysUserGroup> queryByUid(int uid);
+    public List<SysUserGroup> queryByGid(int gid);
+    public SysUserGroup getByUid(int uid);
+    public SysUserGroup getByGid(int gid);
+    public int removeByUidAndGid(int uid,int gid,CurrentUser currentUser);
 }

@@ -33,17 +33,17 @@
             <form:input path="viewname" cssClass="easyui-textbox"  data-options="label:'viewname:',required:true" cssStyle="width: 100%;"/>
             <form:errors path="viewname" />
         </div>
-        <div style="margin-bottom:20px">
-            <form:select path="gid" items="${sysGroupList}" itemLabel="viewname" itemValue="id" cssClass="easyui-combobox" data-options="label:'group:',required:true,editable:false"  cssStyle="width: 100%;"></form:select>
-            <form:errors path="gid" />
-        </div>
-        <div style="margin-bottom:20px">
-            <form:select path="rid" items="${sysRoleList}" itemLabel="viewname" itemValue="id" cssClass="easyui-combobox" data-options="label:'role:',required:true,editable:false"  cssStyle="width: 100%;"></form:select>
-            <form:errors path="rid" />
-        </div>
+        <%--<div style="margin-bottom:20px">--%>
+            <%--<form:select path="rid" items="${sysRoleList}" itemLabel="viewname" itemValue="id" cssClass="easyui-combobox" data-options="label:'role:',required:true,editable:false"  cssStyle="width: 100%;"></form:select>--%>
+            <%--<form:errors path="rid" />--%>
+        <%--</div>--%>
         <div style="margin-bottom:20px">
             <form:password path="password" cssClass="easyui-passwordbox"  data-options="label:'password:',required:true" cssStyle="width: 100%;"/>
             <form:errors path="password" />
+        </div>
+        <div style="margin-bottom:20px">
+            <form:select path="gid" items="${sysGroupList}" itemLabel="viewname" itemValue="id" cssClass="easyui-combobox" data-options="label:'Group:',required:true,editable:false"  cssStyle="width: 100%;"></form:select>
+            <form:errors path="gid" />
         </div>
         <div style="text-align:center;padding:5px 0">
             <a href="javascript:void(0)" class="easyui-linkbutton" onclick="sys_user_save()" style="width:80px" data-options="iconCls:'icon-save'">Save</a>

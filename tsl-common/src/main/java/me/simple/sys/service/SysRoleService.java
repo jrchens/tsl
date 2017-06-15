@@ -14,7 +14,5 @@ public interface SysRoleService {
     public List<SysRole> query(SysRole sysRole, Pageable pageable, CurrentUser currentUser);
 
     public SysRole getByRolename(String rolename);
-
-
-    public List<SysRole> queryAll(boolean filterDisabled);
+    public List<SysRole> queryAll();
 }

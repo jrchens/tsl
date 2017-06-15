@@ -1,13 +1,19 @@
 package me.simple.domain;
 
 import me.simple.validator.group.Remove;
+import me.simple.validator.group.Save;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 public class SysUserGroup implements java.io.Serializable {
 
 private int id;
+
+@Range(min = 1,max = Integer.MAX_VALUE,groups = {Save.class})
 private int uid;
+@Range(min = 1,max = Integer.MAX_VALUE,groups = {Save.class})
 private int gid;
+
 private int srt;
 private boolean deleted;
 private boolean disabled;
@@ -16,7 +22,20 @@ private java.sql.Timestamp crtime;
 private String mduser;
 private java.sql.Timestamp mdtime;
 
-// ============================================================
+  public SysUserGroup() {
+  }
+
+  public SysUserGroup(int id) {
+    this.id = id;
+  }
+
+  public SysUserGroup(int uid, int gid, int srt) {
+    this.uid = uid;
+    this.gid = gid;
+    this.srt = srt;
+  }
+
+  // ============================================================
 @Length(min = 1,max = 200,groups = {Remove.class})
 private String ids;
 // ============================================================

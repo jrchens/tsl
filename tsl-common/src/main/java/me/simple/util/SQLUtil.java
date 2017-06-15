@@ -34,6 +34,19 @@ public class SQLUtil {
         return buffer.toString();
     }
 
+    public static String generateRemoveSql(String tableName, List<String> uniqueKeys) {
+        StringBuffer buffer = new StringBuffer("UPDATE ");
+        buffer.append(tableName).append(" SET ");
+        buffer.append("deleted=1,mduser=:mduser,mdtime=:mdtime ");
+        buffer.append("WHERE deleted=0 AND ");
+        for (String key: uniqueKeys
+             ) {
+            buffer.append(key).append("=:").append(key).append(" AND ");
+        }
+        buffer.delete(buffer.length() - 4, buffer.length());
+        return buffer.toString();
+    }
+
 //    public static String generateDisableToggleSql(String tableName, String primaryKey) {
 //        StringBuffer buffer = new StringBuffer("UPDATE ");
 //        buffer.append(tableName).append(" SET ");
