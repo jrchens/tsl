@@ -32,8 +32,8 @@ public class SysUserServiceImpl implements SysUserService {
     private static final Logger logger = LoggerFactory.getLogger(SysUserService.class);
     public static final String tableName = "sys_user";
     private static final String generatedKeyName = "id";
-    private static final List<String> insertColumns = Lists.newArrayList("gid","rid","username", "viewname", "password", "cruser", "crtime");
-    private static final List<String> updateColumns = Lists.newArrayList("gid","rid","viewname", "password", "mduser", "mdtime");
+    private static final List<String> insertColumns = Lists.newArrayList("username", "viewname", "password", "cruser", "crtime");
+    private static final List<String> updateColumns = Lists.newArrayList("viewname", "password", "mduser", "mdtime");
 
     private SimpleJdbcInsert simpleJdbcInsert;
     private JdbcTemplate jdbcTemplate;
@@ -43,6 +43,8 @@ public class SysUserServiceImpl implements SysUserService {
     private SysUserGroupService sysUserGroupService;
     @Autowired
     private SysGroupService sysGroupService;
+    @Autowired
+    private SysRoleService sysRoleService;
 
 
     @Autowired
@@ -104,10 +106,10 @@ public class SysUserServiceImpl implements SysUserService {
             sysUser.setPassword(clone.getPassword());
         }
 
-        int uid = sysUser.getId();
-        int gid = sysUser.getGid();
+//        int uid = sysUser.getId();
+//        int gid = sysUser.getGid();
         // remove the sys_user_group (uid = ${uid} AND gid = ${gid})
-        sysUserGroupService.removeByUidAndGid(uid,gid,currentUser);
+//        sysUserGroupService.removeByUidAndGid(uid,gid,currentUser);
 
         return namedParameterJdbcTemplate.update(SQLUtil.generateUpdateSql(tableName, updateColumns, generatedKeyName), new BeanPropertySqlParameterSource(sysUser));
     }
@@ -116,7 +118,8 @@ public class SysUserServiceImpl implements SysUserService {
     @Transactional(readOnly = true)
     public SysUser get(SysUser sysUser, CurrentUser currentUser) {
         SysUser user = namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName, generatedKeyName), new BeanPropertySqlParameterSource(sysUser), new BeanPropertyRowMapper<SysUser>(SysUser.class));
-        user.setGroup(sysGroupService.getById(user.getGid()));
+//        user.setGroup(sysGroupService.getById(user.getGid()));
+//        user.setRole(sysRoleService.getById(user.getRid()));
         return user;
     }
 
@@ -146,10 +149,11 @@ public class SysUserServiceImpl implements SysUserService {
         SQLUtil.sortingAndPaging(buffer, pageable);
 
         List<SysUser> users = jdbcTemplate.query(buffer.toString(), args.toArray(), new BeanPropertyRowMapper<SysUser>(SysUser.class));
-        for (SysUser user : users
-                ) {
-            user.setGroup(sysGroupService.getById(user.getGid()));
-        }
+//        for (SysUser user : users
+//                ) {
+//            user.setGroup(sysGroupService.getById(user.getGid()));
+//            user.setRole(sysRoleService.getById(user.getRid()));
+//        }
         return users;
     }
 
@@ -159,7 +163,7 @@ public class SysUserServiceImpl implements SysUserService {
         try {
             SysUser sysUser = new SysUser();
             sysUser.setUsername(username);
-            return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName, "username"), new BeanPropertySqlParameterSource(sysUser), new BeanPropertyRowMapper<SysUser>(SysUser.class));
+            return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetAllSql(tableName, "username"), new BeanPropertySqlParameterSource(sysUser), new BeanPropertyRowMapper<SysUser>(SysUser.class));
         } catch (DataAccessException e) {
             // username not exists
             return null;

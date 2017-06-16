@@ -15,4 +15,5 @@ public interface SysRoleService {
 
     public SysRole getByRolename(String rolename);
     public List<SysRole> queryAll();
+    public SysRole getById(int id);
 }

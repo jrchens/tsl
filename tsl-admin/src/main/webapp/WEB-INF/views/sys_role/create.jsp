@@ -15,7 +15,10 @@
 
     <form:form id="sys_role_create_form" method="post" servletRelativeAction="/sys_role/save.json" commandName="sysRole">
         <div style="margin-bottom:20px">
-            <form:input path="rolename" cssClass="easyui-textbox"  data-options="label:'rolename:',required:true" cssStyle="width: 100%;"/>
+            <form:input path="rolename" cssClass="easyui-textbox"  data-options="label:'rolename:',required:true,validType:{
+                length:[4,32],
+                remote:['/valid.json?code=120','rolename']
+                }" cssStyle="width: 100%;"/>
             <form:errors path="rolename" />
         </div>
         <div style="margin-bottom:20px">

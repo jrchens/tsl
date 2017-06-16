@@ -137,4 +137,18 @@ public class SysRoleServiceImpl implements SysRoleService {
 
         return jdbcTemplate.query(buffer.toString(), args.toArray(), new BeanPropertyRowMapper<SysRole>(SysRole.class));
     }
+
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public SysRole getById(int id) {
+        try {
+            SysRole sysRole = new SysRole(id);
+            return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName, generatedKeyName, false), new BeanPropertySqlParameterSource(sysRole), new BeanPropertyRowMapper<SysRole>(SysRole.class));
+        } catch (DataAccessException e) {
+            // rolename not exists
+            return new SysRole();
+        }
+    }
 }

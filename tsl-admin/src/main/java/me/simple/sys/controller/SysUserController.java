@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +45,8 @@ public class SysUserController {
     @Autowired
     private MessageSource messageSource;
 
+    private String modelname = "model.sys_user";
+
     @RequestMapping(value = "index", method = RequestMethod.GET)
     public String index(@Validated(value = {Index.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
@@ -55,7 +58,7 @@ public class SysUserController {
     public String create(@Validated(value = {Create.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
 
         model.addAttribute(sysUser);
-        model.addAttribute(sysGroupService.queryAll());
+//        model.addAttribute(sysGroupService.queryAll());
 //        model.addAttribute(sysRoleService.queryAll());
         return "sys_user/create";
     }
@@ -79,7 +82,7 @@ public class SysUserController {
     public ResponseEntity<Map<String,Object>> asave(@Validated(value = {Save.class}) SysUser sysUser, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
         // username exists
         boolean success = true;
-        String message = null;
+        String message = "save.success";
         Map<String,Object> body = Maps.newHashMap();
 //        if (sysUserService.getByUsername(sysUser.getUsername()) != null) {
 //            bindingResult.rejectValue("username", "value.exists", new Object[]{sysUser.getUsername()}, "value.exists");
@@ -92,14 +95,14 @@ public class SysUserController {
 //            for (FieldError fe: feList) {
 //                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
 //            }
-            message = "valid.failed";
-        }else{
+            message = "field.bind.error";
+        } else {
             sysUserService.save(sysUser, currentUser);
         }
 
         body.put("success",success);
 //        body.put("data",data);
-        body.put("message",message);
+        body.put("message",messageSource.getMessage(message,new Object[]{modelname},null));
 
         return ResponseEntity.ok(body);
     }
@@ -130,14 +133,14 @@ public class SysUserController {
 //            for (FieldError fe: feList) {
 //                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
 //            }
-            message = "valid.failed";
+            message = "field.bind.error";
         }else{
             sysUserService.remove(sysUser, currentUser);
         }
 
         body.put("success",success);
 //        body.put("data",data);
-        body.put("message",messageSource.getMessage(message,null,null));
+        body.put("message",messageSource.getMessage(message,new Object[]{modelname},null));
 
         return ResponseEntity.ok(body);
     }
@@ -150,10 +153,8 @@ public class SysUserController {
 
         model.addAttribute(sysUserService.get(sysUser, currentUser));
 
-        List<SysGroup> sysGroupList = sysGroupService.queryAll();
-        model.addAttribute(sysGroupList);
-
-
+//        List<SysGroup> sysGroupList = sysGroupService.queryAll();
+//        model.addAttribute(sysGroupList);
 //        List<SysRole> sysRoleList = sysRoleService.queryAll();
 //        model.addAttribute(sysRoleList);
 
@@ -187,14 +188,14 @@ public class SysUserController {
 //            for (FieldError fe: feList) {
 //                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
 //            }
-            message = "valid.failed";
+            message = "field.bind.error";
         }else{
             sysUserService.update(sysUser, currentUser);
         }
 
         body.put("success",success);
 //        body.put("data",data);
-        body.put("message",messageSource.getMessage(message,null,null));
+        body.put("message",messageSource.getMessage(message,new Object[]{modelname},null));
 
         return ResponseEntity.ok(body);
     }

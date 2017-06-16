@@ -145,7 +145,12 @@ public class SysGroupServiceImpl implements SysGroupService {
     @Override
     @Transactional(readOnly = true)
     public SysGroup getById(int id) {
-        SysGroup sysGroup = new SysGroup(id);
-        return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName, generatedKeyName), new BeanPropertySqlParameterSource(sysGroup), new BeanPropertyRowMapper<SysGroup>(SysGroup.class));
+        try {
+            SysGroup sysGroup = new SysGroup(id);
+            return namedParameterJdbcTemplate.queryForObject(SQLUtil.generateGetSql(tableName, generatedKeyName, false), new BeanPropertySqlParameterSource(sysGroup), new BeanPropertyRowMapper<SysGroup>(SysGroup.class));
+        } catch (DataAccessException e) {
+            // groupname not exists
+            return new SysGroup();
+        }
     }
 }

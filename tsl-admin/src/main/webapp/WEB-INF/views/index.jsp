@@ -30,7 +30,7 @@
     </div>
 
 
-    <div data-options="region:'south',split:true" style="height:50px;">copy right</div>
+    <%--<div data-options="region:'south',split:true" style="height:50px;">copy right</div>--%>
 
     <%--
     <div data-options="region:'east',split:true" title="East" style="width:180px;">

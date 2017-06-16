@@ -80,6 +80,13 @@ public class SQLUtil {
         return buffer.toString();
     }
 
+    public static String generateGetAllSql(String tableName, String primaryKey) {
+        StringBuffer buffer = new StringBuffer("SELECT * FROM ");
+        buffer.append(tableName).append(" WHERE ");
+        buffer.append(primaryKey).append("=:").append(primaryKey);
+        return buffer.toString();
+    }
+
     public static String generateGetSql(String tableName, String primaryKey,boolean filterDeleted) {
         StringBuffer buffer = new StringBuffer("SELECT * FROM ");
         buffer.append(tableName).append(" ");

@@ -51,12 +51,7 @@ jQuery(function () {
                                         if(data.success){
                                             dg.datagrid('reload');
                                         }else{
-                                            var errors = data.data;
-                                            var s = [];
-                                            for (var k in errors){
-                                                s.push(k+" : "+errors[k]);
-                                            }
-                                            jQuery.messager.show({msg: s.join("<br>")});
+                                            jQuery.messager.show({msg: data.message});
                                         }
 
                                     }
@@ -73,10 +68,10 @@ jQuery(function () {
                 {field: "id",checkbox:true},
                 {field: "username",title: "用户名"},
                 {field: "viewname",title: "显示名"},
-                {field: "gid",title: "用户组",formatter:function (value,row,index) {
+                /*{field: "gid",title: "群组名",formatter:function (value,row,index) {
                     return row.group.viewname;
                 }},
-                /*{field: "rid",title: "角色",formatter:function (value,row,index) {
+                {field: "rid",title: "角色名",formatter:function (value,row,index) {
                     return row.role.viewname
                 }},*/
             ]]

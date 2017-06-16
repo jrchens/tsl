@@ -22,7 +22,10 @@
 
     <form:form id="sys_group_create_form" method="post" servletRelativeAction="/sys_group/save.json" commandName="sysGroup">
         <div style="margin-bottom:20px">
-            <form:input path="groupname" cssClass="easyui-textbox"  data-options="label:'groupname:',required:true" cssStyle="width: 100%;"/>
+            <form:input path="groupname" cssClass="easyui-textbox"  data-options="label:'groupname:',required:true,validType:{
+                length:[4,32],
+                remote:['/valid.json?code=110','groupname']
+                }" cssStyle="width: 100%;"/>
             <form:errors path="groupname" />
         </div>
         <div style="margin-bottom:20px">
