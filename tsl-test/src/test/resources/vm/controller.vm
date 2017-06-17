@@ -64,24 +64,25 @@ public class ${ClazzName}Controller {
     @ResponseBody
     public ResponseEntity<Map<String,Object>> asave(@Validated(value = {Save.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
         boolean success = true;
-        String message = null;
+        String message = "save.success";
+
         Map<String,Object> body = Maps.newHashMap();
 
         Map<String,Object> data = Maps.newHashMap();
         if (bindingResult.hasErrors()) {
             success = false;
-            List<FieldError> feList = bindingResult.getFieldErrors();
-            for (FieldError fe: feList) {
-                data.put(fe.getField(),
-                messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
-            }
+//            List<FieldError> feList = bindingResult.getFieldErrors();
+//            for (FieldError fe: feList) {
+//                data.put(fe.getField(),messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+//            }
+            message = "field.bind.error";
         }else{
             ${clazzName}Service.save(${clazzName}, currentUser);
         }
 
         body.put("success",success);
         body.put("data",data);
-        body.put("message",message);
+        body.put("message",messageSource.getMessage(message,new Object[]{modelname},null));
 
         return ResponseEntity.ok(body);
     }
@@ -102,25 +103,26 @@ public class ${ClazzName}Controller {
     public ResponseEntity<Map<String,Object>> aremove(/*@Validated(value = {Remove.class}) */${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
     
         boolean success = true;
-        String message = null;
+        String message = "remove.success";;
         Map<String,Object> body = Maps.newHashMap();
 
-        Map<String,Object> data = Maps.newHashMap();
+//        Map<String,Object> data = Maps.newHashMap();
 
         if (bindingResult.hasErrors()) {
             success = false;
             List<FieldError> feList = bindingResult.getFieldErrors();
-            for (FieldError fe: feList) {
-                data.put(fe.getField(),
-                messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
-            }
+//            for (FieldError fe: feList) {
+//                data.put(fe.getField(),
+//                messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+//            }
+            message = "field.bind.error";
         }else{
             ${clazzName}Service.remove(${clazzName}, currentUser);
         }
 
         body.put("success",success);
-        body.put("data",data);
-        body.put("message",message);
+        // body.put("data",data);
+        body.put("message",messageSource.getMessage(message,new Object[]{modelname},null));
 
         return ResponseEntity.ok(body);
     }
@@ -151,24 +153,25 @@ public class ${ClazzName}Controller {
     public ResponseEntity<Map<String,Object>> aupdate(@Validated(value = {Update.class}) ${ClazzName} ${clazzName}, BindingResult bindingResult, @LoginedUser CurrentUser currentUser, Model model) {
     
         boolean success = true;
-        String message = null;
+        String message = "update.success";
         Map<String,Object> body = Maps.newHashMap();
 
-        Map<String,Object> data = Maps.newHashMap();
+        // Map<String,Object> data = Maps.newHashMap();
         if (bindingResult.hasErrors()) {
-            List<FieldError> feList = bindingResult.getFieldErrors();
-            for (FieldError fe: feList) {
-                data.put(fe.getField(),
-                messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
-            }
+//            List<FieldError> feList = bindingResult.getFieldErrors();
+//            for (FieldError fe: feList) {
+//               data.put(fe.getField(),
+//                messageSource.getMessage(fe.getCode(),fe.getArguments(),fe.getDefaultMessage(),null));
+//            }
             success = false;
+            message = "field.bind.error";
         }else{
              ${clazzName}Service.update( ${clazzName}, currentUser);
         }
     
         body.put("success",success);
-        body.put("data",data);
-        body.put("message",message);
+        // body.put("data",data);
+        body.put("message",messageSource.getMessage(message,new Object[]{modelname},null));
     
         return ResponseEntity.ok(body);
     }
