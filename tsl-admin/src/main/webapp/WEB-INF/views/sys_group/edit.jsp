@@ -27,7 +27,7 @@
             <form:errors path="groupname" />
         </div>
         <div style="margin-bottom:20px">
-            <form:input path="viewname" cssClass="easyui-textbox"  data-options="label:'viewname:',required:true" cssStyle="width: 100%;"/>
+            <form:input path="viewname" cssClass="easyui-textbox"  data-options="label:'viewname:',required:true,validType:{length:[2,32]}" cssStyle="width: 100%;"/>
             <form:errors path="viewname" />
         </div>
         <div style="text-align:center;padding:5px 0">

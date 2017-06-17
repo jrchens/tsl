@@ -28,11 +28,11 @@
             <form:errors path="username" />
         </div>
         <div style="margin-bottom:20px">
-            <form:input path="viewname" cssClass="easyui-textbox"  data-options="label:'viewname:',required:true" cssStyle="width: 100%;"/>
+            <form:input path="viewname" cssClass="easyui-textbox"  data-options="label:'viewname:',required:true,validType:{length:[2,32]}" cssStyle="width: 100%;"/>
             <form:errors path="viewname" />
         </div>
         <div style="margin-bottom:20px">
-            <form:password path="password" cssClass="easyui-tooltip easyui-passwordbox"  data-options="label:'password:'" cssStyle="width: 100%;"/>
+            <form:password path="password" cssClass="easyui-tooltip easyui-passwordbox"  data-options="label:'password:',validType:{length:[0,32]}" cssStyle="width: 100%;"/>
             <form:errors path="password" />
         </div>
         <%--<div style="margin-bottom:20px">--%>

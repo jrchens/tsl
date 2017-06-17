@@ -36,7 +36,6 @@ jQuery(function () {
                     if(rows.length > 0){
                         jQuery.messager.confirm('', 'Are you sure remove selected records?', function(r){
                             if (r){
-
                                 var form = jQuery("#sys_group_remove_form");
                                 var url = form.attr("action");
                                 var ids = [];
@@ -50,7 +49,6 @@ jQuery(function () {
                                         dg.datagrid('reload');
                                     }
                                 });
-
                             }
                         });
                     }else{

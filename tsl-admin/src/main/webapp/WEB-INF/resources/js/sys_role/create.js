@@ -8,12 +8,7 @@ function sys_role_save() {
             if(data.success){
                 tabRefresh("/sys_role/index");
             }else{
-                var errors = data.data;
-                var s = [];
-                for (var k in errors){
-                    s.push(k+" : "+errors[k]);
-                }
-                jQuery.messager.show({msg: s.join("<br>")});
+                jQuery.messager.show({msg: data.message});
             }
         }
     });

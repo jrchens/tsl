@@ -53,7 +53,6 @@ jQuery(function () {
                                         }else{
                                             jQuery.messager.show({msg: data.message});
                                         }
-
                                     }
                                 });
 
