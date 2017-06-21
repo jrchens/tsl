@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: chensheng
@@ -54,11 +55,13 @@
         </div>--%>
 
         <div class="easyui-accordion" data-options="fit:true,border:false">
-            <div title="System" style="padding:10px;">
-                <div class="menu-link"><a id="1" href="javascript:;">User Manager</a></div>
-                <div class="menu-link"><a id="3" href="javascript:;">Group Manager</a></div>
-                <div class="menu-link"><a id="2" href="javascript:;">Role Manager</a></div>
+            <c:forEach var="menuGroup" items="${sysMenuGroupList}">
+            <div title="${menuGroup.viewname}" style="padding:10px;">
+                <c:forEach var="menu" items="${menuGroup.children}">
+                <div class="menu-link"><a id="${menu.id}" href="javascript:;">${menu.viewname}</a></div>
+                </c:forEach>
             </div>
+            </c:forEach>
         </div>
 
     </div>

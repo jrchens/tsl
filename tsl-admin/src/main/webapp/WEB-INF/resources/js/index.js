@@ -14,20 +14,19 @@ jQuery(function(){
             }
         });
 
-
-            jQuery.getJSON("/sys_menu/get",{id:id},function(data, textStatus, jqXHR){
+            jQuery.getJSON("/sys_menu/get.json",jQuery.param({id:id}),function(data, textStatus, jqXHR){
                 if(!opend){
                     LAYOUT_TABS_CENTER.tabs('add',{
                         id: id,
-                        title: data.viewname,
+                        title: data.data.viewname,
                         selected: true,
-                        href:data.url,
+                        href:data.data.url,
                         closable: true,
                         cache: false,
                         cls: 'center-body'
                     });
                 }else{
-                    tabRefresh(data.url);
+                    tabRefresh(data.data.url);
                 }
             });
     });

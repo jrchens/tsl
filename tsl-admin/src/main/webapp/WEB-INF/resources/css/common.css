@@ -12,3 +12,10 @@
     display: inline;
     margin-right: 8px;
 }
+
+.tree-node {
+    height: 18px;
+    white-space: nowrap;
+    cursor: pointer;
+    padding: 2px;
+}

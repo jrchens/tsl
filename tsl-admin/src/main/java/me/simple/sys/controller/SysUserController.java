@@ -84,9 +84,9 @@ public class SysUserController {
         boolean success = true;
         String message = "save.success";
         Map<String,Object> body = Maps.newHashMap();
-//        if (sysUserService.getByUsername(sysUser.getUsername()) != null) {
-//            bindingResult.rejectValue("username", "value.exists", new Object[]{sysUser.getUsername()}, "value.exists");
-//        }
+        if (sysUserService.getByUsername(sysUser.getUsername()) != null) {
+            bindingResult.rejectValue("username", "value.exists", new Object[]{sysUser.getUsername()}, "value.exists");
+        }
 
 //        Map<String,Object> data = Maps.newHashMap();
         if (bindingResult.hasErrors()) {

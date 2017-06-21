@@ -1,8 +1,7 @@
 package me.simple.sys.controller;
 
-import me.simple.domain.CurrentUser;
-import me.simple.domain.LoginUser;
-import me.simple.domain.SysUser;
+import me.simple.domain.*;
+import me.simple.sys.service.SysMenuService;
 import me.simple.sys.service.SysUserService;
 import me.simple.web.method.support.LoginedUser;
 import org.slf4j.Logger;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 
+import java.util.List;
+
 /**
  * Created by chensheng on 17/5/24.
  */
@@ -26,6 +27,8 @@ public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Autowired
     private SysUserService sysUserService;
+    @Autowired
+    private SysMenuService sysMenuService;
 
     @RequestMapping(value = {""}, method = RequestMethod.GET)
     public String index(LoginUser loginUser, BindingResult bindingResult, Model model) {
@@ -57,6 +60,15 @@ public class LoginController {
         currentUser.setUsername(username);
         currentUser.setViewname(sysUser.getViewname());
         webRequest.setAttribute("currentUser",currentUser, RequestAttributes.SCOPE_SESSION);
+
+        SysMenu root = sysMenuService.getRoot();
+        List<SysMenu> sysMenuGroupList = sysMenuService.getChildrenByPid(root.getId());
+        for (SysMenu smg: sysMenuGroupList
+             ) {
+            smg.setChildren(sysMenuService.getChildrenByPid(smg.getId()));
+        }
+        webRequest.setAttribute("sysMenuGroupList",sysMenuGroupList,RequestAttributes.SCOPE_SESSION);
+
         return "redirect:/index";
     }
 
