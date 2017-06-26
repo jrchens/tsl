@@ -30,8 +30,8 @@ public class ${ClazzName}ServiceImpl implements ${ClazzName}Service {
     private static final Logger logger = LoggerFactory.getLogger(${ClazzName}Service.class);
     public static final String tableName = "${tablename}";
     private static final String generatedKeyName = "id";
-    private static final List<String> insertColumns = Lists.newArrayList("cruser","crtime");
-    private static final List<String> updateColumns = Lists.newArrayList("mduser","mdtime");
+    private static final List<String> insertColumns = Lists.newArrayList(#foreach(${field} in ${fields}) "${field.name}",#end);
+    private static final List<String> updateColumns = Lists.newArrayList(#foreach(${field} in ${fields}) "${field.name}",#end);
 
     private SimpleJdbcInsert simpleJdbcInsert;
     private JdbcTemplate jdbcTemplate;

@@ -2,7 +2,9 @@
  * Created by chensheng on 17/5/28.
  */
 jQuery.fn.datagrid.defaults.method = "GET";
+jQuery.fn.combo.defaults.method = "GET";
 jQuery.fn.tree.defaults.method = "GET";
+jQuery.fn.combotree.defaults.method = "GET";
 
 jQuery.extend(jQuery.fn.validatebox.defaults.rules,
     {
